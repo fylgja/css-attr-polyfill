@@ -1,7 +1,52 @@
+import postcss from "postcss";
+import { generateFallbacks } from "../generate.js";
+import { createResolver, parseAnnotations } from "../safelist.js";
 import { collectAttributeNames, scan } from "../scanner.js";
-import { transformRoot } from "../transform.js";
+import { DEFAULT_SUPPORTS_CONDITION } from "../transform.js";
 
 const PLUGIN = "css-attr-polyfill";
+
+/**
+ * Build the fallback rules for one PostCSS rule, merging declarations that share a selector.
+ *
+ * @param {import("postcss").Rule} rule
+ * @param {(attribute: string) => string[]} resolve
+ * @param {{ maxValues?: number }} options
+ * @returns {{ rules: import("postcss").Rule[], warnings: string[] }}
+ */
+function buildRulesFor(rule, resolve, options) {
+	/** @type {Map<string, import("postcss").Declaration[]>} */
+	const bySelector = new Map();
+	const warnings = [];
+
+	rule.each((node) => {
+		if (node.type !== "decl" || !node.value.includes("attr(")) return;
+
+		const result = generateFallbacks(
+			{ prop: node.prop, selector: rule.selector, value: node.value },
+			resolve,
+			options,
+		);
+
+		warnings.push(...result.warnings.map((message) => `${rule.selector} { ${message} }`));
+
+		for (const generated of result.rules) {
+			const declarations = bySelector.get(generated.selector) ?? [];
+			const declaration = postcss.decl({ prop: generated.prop, value: generated.value });
+			declaration.raws = { before: " ", between: ": " };
+			declarations.push(declaration);
+			bySelector.set(generated.selector, declarations);
+		}
+	});
+
+	const rules = [...bySelector].map(([selector, declarations]) => {
+		const generated = postcss.rule({ selector });
+		generated.raws = { after: " ", between: " ", semicolon: false };
+		return generated.append(declarations);
+	});
+
+	return { rules, warnings };
+}
 
 /**
  * PostCSS plugin that compiles attr() v2 into static fallback rules.
@@ -9,13 +54,25 @@ const PLUGIN = "css-attr-polyfill";
  * A PostCSS plugin transforms one stylesheet into one stylesheet, so this always uses
  * combined output. Use the CLI or `compile()` when you want a separate fallback file.
  *
- * @param {object} [options] every `transform` option, plus the ones below
+ * @param {object} [options]
  * @param {string[]} [options.content] content globs to scan for attribute values
  * @param {string} [options.cwd] base directory for the content globs
+ * @param {Record<string, unknown>} [options.safelist] attribute values, keys may use `*`
+ * @param {"merge" | "override"} [options.annotationMode] how CSS annotations combine with config
+ * @param {string} [options.supports] `@supports` condition guarding the fallback
+ * @param {number} [options.maxValues] cap on generated rules per declaration
  * @returns {import("postcss").Plugin}
  */
 export function attrPolyfill(options = {}) {
-	const { content = [], cwd, mode, ...transformOptions } = options;
+	const {
+		content = [],
+		cwd,
+		mode,
+		safelist = {},
+		annotationMode = "merge",
+		supports = DEFAULT_SUPPORTS_CONDITION,
+		maxValues,
+	} = options;
 
 	// Scanning the same content for every stylesheet in a build would be wasteful.
 	const scans = new Map();
@@ -46,14 +103,53 @@ export function attrPolyfill(options = {}) {
 				dynamic = found.dynamic;
 			}
 
-			const { warnings } = transformRoot(root, {
-				...transformOptions,
-				dynamic,
-				mode: "combined",
+			const comments = [];
+			root.walkComments((comment) => comments.push(comment.text));
+			const resolve = createResolver({
+				annotationMode,
+				annotations: parseAnnotations(comments),
+				safelist,
 				scanned,
 			});
 
-			for (const text of warnings) result.warn(text, { plugin: PLUGIN });
+			for (const attribute of dynamic) {
+				if (resolve(attribute).length === 0) {
+					result.warn(
+						`"${attribute}" is bound at runtime in your content, so its values ` +
+							`cannot be scanned. Add them to the safelist.`,
+						{ plugin: PLUGIN },
+					);
+				}
+			}
+
+			/** @type {Array<{ source: import("postcss").Rule, generated: import("postcss").Rule[] }>} */
+			const pending = [];
+
+			root.walkRules((rule) => {
+				// Nested rules resolve their selector against the parent, which the
+				// generator cannot express.
+				if (rule.parent?.type === "rule") return;
+
+				const built = buildRulesFor(rule, resolve, { maxValues });
+				for (const text of built.warnings) result.warn(text, { plugin: PLUGIN });
+				if (built.rules.length) pending.push({ generated: built.rules, source: rule });
+			});
+
+			for (const { source, generated } of pending) {
+				const indent = /\n([ \t]*)$/.exec(source.raws.before ?? "")?.[1] ?? "";
+				const guard = postcss.atRule({ name: "supports", params: supports });
+				guard.append(generated);
+				// The guard takes over the source rule's spacing, so inserting it never
+				// introduces a stray blank line at the top of the file.
+				guard.raws = {
+					after: `\n${indent}`,
+					before: source.raws.before ?? "",
+					between: " ",
+				};
+				for (const rule of guard.nodes) rule.raws.before = `\n${indent}  `;
+				source.raws.before = `\n${indent}`;
+				source.parent.insertBefore(source, guard);
+			}
 		},
 	};
 }

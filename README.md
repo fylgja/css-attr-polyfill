@@ -1,4 +1,4 @@
-# css-attr-polyfill
+# @fylgja/css-attr-polyfill
 
 Compile CSS `attr()` v2 into static fallback rules for browsers that do not support it.
 
@@ -40,10 +40,24 @@ generated set still work there.
 ## Install
 
 ```bash
-npm install css-attr-polyfill
+npm install @fylgja/css-attr-polyfill
 ```
 
 Requires Node 22 or newer.
+
+### Dependencies
+
+The core depends on two small string level parsers and nothing else. Despite their names,
+neither is PostCSS, and `postcss-value-parser` has no dependencies of its own.
+
+| Package                   | Used for                     |
+| ------------------------- | ---------------------------- |
+| `postcss-value-parser`    | Reading the `attr()` grammar |
+| `postcss-selector-parser` | Narrowing selectors safely   |
+
+CSS documents are read by a parser built into this package, so nothing pulls in a CSS
+framework. `postcss`, `lightningcss` and `vite` are optional peers, needed only by the
+integration you actually use.
 
 ## Usage
 
@@ -68,7 +82,7 @@ css-attr-polyfill utilities.css -c "src/**/*.{html,jsx,vue}" -o utilities.compil
 ### API
 
 ```js
-import { compile } from "css-attr-polyfill";
+import { compile } from "@fylgja/css-attr-polyfill";
 
 const { css, warnings } = await compile(source, {
 	content: ["src/**/*.{html,jsx,vue}"],
@@ -117,8 +131,9 @@ them replace it instead.
 
 ## Output modes
 
-`combined` (the default) inserts each fallback immediately before its source rule, so the
-generated CSS keeps that rule's position in the cascade.
+`combined` (the default) splices each fallback in immediately before its source rule, so the
+generated CSS keeps that rule's position in the cascade. Every byte the compiler does not
+touch is preserved exactly as authored, including your own formatting and comments.
 
 `split` leaves the source stylesheet untouched and returns a second stylesheet containing
 only the fallbacks, mirroring any `@layer`, `@media` or `@container` nesting. The `@supports`
@@ -158,7 +173,7 @@ stylesheet out. Use the CLI or `compile()` when you want a separate fallback fil
 ### Vite
 
 ```js
-import attrPolyfill from "css-attr-polyfill/vite";
+import attrPolyfill from "@fylgja/css-attr-polyfill/vite";
 
 export default {
 	plugins: [attrPolyfill({ content: ["src/**/*.{html,jsx,vue}"] })],
@@ -171,7 +186,7 @@ minification.
 ### PostCSS
 
 ```js
-import attrPolyfill from "css-attr-polyfill/postcss";
+import attrPolyfill from "@fylgja/css-attr-polyfill/postcss";
 
 export default {
 	plugins: [attrPolyfill({ content: ["src/**/*.html"] })],
@@ -189,7 +204,7 @@ CSS text. Generated rules therefore cannot be injected from a visitor, so this i
 runs before Lightning CSS parses the stylesheet.
 
 ```js
-import { preprocess } from "css-attr-polyfill/lightningcss";
+import { preprocess } from "@fylgja/css-attr-polyfill/lightningcss";
 import { transform } from "lightningcss";
 
 const { code } = await preprocess(source, { content: ["src/**/*.html"] });
