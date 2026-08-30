@@ -1,0 +1,58 @@
+{
+	"name": "css-attr-polyfill",
+	"version": "0.1.0",
+	"description": "Compile CSS attr() v2 into static fallbacks for browsers that do not support it",
+	"type": "module",
+	"main": "index.js",
+	"license": "MIT",
+	"engines": {
+		"node": ">=22.0.0"
+	},
+	"keywords": [
+		"css",
+		"attr",
+		"polyfill",
+		"fallback",
+		"postcss",
+		"lightningcss"
+	],
+	"files": [
+		"bin",
+		"index.js",
+		"src"
+	],
+	"scripts": {
+		"format": "prettier --write .",
+		"format:check": "prettier --check .",
+		"test": "node --test tests/*.test.js"
+	},
+	"dependencies": {
+		"postcss": "^8.5.6",
+		"postcss-selector-parser": "^7.1.0",
+		"postcss-value-parser": "^4.2.0"
+	},
+	"bin": {
+		"css-attr-polyfill": "./bin/css-attr-polyfill.js"
+	},
+	"devDependencies": {
+		"prettier": "^3.9.6"
+	},
+	"exports": {
+		".": "./index.js",
+		"./postcss": "./src/adapters/postcss.js",
+		"./lightningcss": "./src/adapters/lightningcss.js",
+		"./vite": "./src/adapters/vite.js"
+	},
+	"peerDependencies": {
+		"lightningcss": "*",
+		"vite": "*"
+	},
+	"peerDependenciesMeta": {
+		"lightningcss": {
+			"optional": true
+		},
+		"vite": {
+			"optional": true
+		}
+	}
+}

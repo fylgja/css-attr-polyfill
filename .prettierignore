@@ -1,0 +1,6 @@
+node_modules
+package-lock.json
+.delta
+
+# Copied verbatim from Fylgja so the tests exercise real source formatting.
+tests/fixtures
