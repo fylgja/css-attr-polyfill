@@ -1,0 +1,9 @@
+/*
+ * The single entry. Order matters: utilities come last so their generated fallback
+ * rules land after everything they need to override.
+ */
+
+@import "@fylgja/tokens/css/index.css";
+@import "@fylgja/base/index.css";
+@import "./style.css";
+@import "./utilities.css";

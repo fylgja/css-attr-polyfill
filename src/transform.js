@@ -195,12 +195,17 @@ export function transform(css, options = {}) {
 		return { css, fallback: fallback ? `${fallback}\n` : "", warnings };
 	}
 
+	// The guard goes immediately after its source rule, never before. Browsers without
+	// attr() v2 do not reliably drop the declaration at parse time, so a fallback placed
+	// earlier would lose to it. Staying adjacent keeps the source rule's position
+	// relative to everything else in the stylesheet.
+	//
 	// Applied back to front so each offset still refers to the original text.
 	let out = css;
 	for (const { rule, rules } of pending.slice().reverse()) {
 		const indent = indentAt(css, rule.start);
-		const guard = `${formatGuard(supports, rules, indent, unit)}\n${indent}`;
-		out = out.slice(0, rule.start) + guard + out.slice(rule.start);
+		const guard = `\n${indent}${formatGuard(supports, rules, indent, unit)}`;
+		out = out.slice(0, rule.end) + guard + out.slice(rule.end);
 	}
 
 	return { css: out, fallback: null, warnings };

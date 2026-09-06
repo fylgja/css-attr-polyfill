@@ -139,16 +139,15 @@ export function attrPolyfill(options = {}) {
 				const indent = /\n([ \t]*)$/.exec(source.raws.before ?? "")?.[1] ?? "";
 				const guard = postcss.atRule({ name: "supports", params: supports });
 				guard.append(generated);
-				// The guard takes over the source rule's spacing, so inserting it never
-				// introduces a stray blank line at the top of the file.
 				guard.raws = {
 					after: `\n${indent}`,
-					before: source.raws.before ?? "",
+					before: `\n${indent}`,
 					between: " ",
 				};
 				for (const rule of guard.nodes) rule.raws.before = `\n${indent}  `;
-				source.raws.before = `\n${indent}`;
-				source.parent.insertBefore(source, guard);
+				// After, never before. Browsers without attr() v2 do not reliably drop the
+				// declaration at parse time, so an earlier fallback would lose to it.
+				source.parent.insertAfter(source, guard);
 			}
 		},
 	};

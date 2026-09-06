@@ -31,6 +31,10 @@ describe("postcss plugin", () => {
 
 		assert.ok(result.css.includes('[data-py="2"] { padding-block: calc(var(--spacing) * 2) }'));
 		assert.ok(result.css.includes("attr(data-py type(<number>), 1)"));
+		assert.ok(
+			result.css.indexOf("attr(data-py") < result.css.indexOf('[data-py="2"]'),
+			"the fallback must come after the declaration it stands in for",
+		);
 	});
 
 	it("scans content when globs are configured", async () => {
@@ -94,6 +98,20 @@ describe("vite plugin", () => {
 
 		const result = await plugin.transform.call(context, SPACING, "/app/a.css");
 		assert.ok(result.code.includes('[data-py="2"]'));
+	});
+
+	it("does not run as a pre plugin", () => {
+		// Vite inlines @import inside its own CSS plugin. A pre plugin would only ever see
+		// the entry stylesheet, before any imported file had been pulled in, and would
+		// silently generate nothing.
+		assert.equal(viteAttrPolyfill({}).enforce, undefined);
+	});
+
+	it("puts the fallback after the declaration it replaces", async () => {
+		const plugin = viteAttrPolyfill({ safelist: { "data-py": "2" } });
+		const { code } = await plugin.transform.call({ warn() {} }, SPACING, "/app/a.css");
+
+		assert.ok(code.indexOf("attr(data-py") < code.indexOf('[data-py="2"]'));
 	});
 
 	it("handles ids carrying a query string", async () => {

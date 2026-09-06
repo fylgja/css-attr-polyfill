@@ -24,23 +24,36 @@ The page should look the same either way. That is the whole point.
 
 ## What ships
 
-`src/utilities.css` is the only stylesheet you write. The Vite plugin compiles it in place,
-so the built CSS contains both paths:
+`src/main.css` is the entry, and `@import` order decides everything:
 
 ```css
-@supports not (padding: attr(x type(<length>), 1px)) {
-	[data-p="3"] {
-		padding: calc(var(--spacing) * 3);
-	}
-}
+@import "@fylgja/tokens/css/index.css";
+@import "@fylgja/base/index.css";
+@import "./style.css";
+@import "./utilities.css";
+```
+
+Utilities come last, so their generated fallbacks land after everything they need to
+override. `src/utilities.css` is the only stylesheet you write. The Vite plugin compiles it
+in place, so the built CSS contains both paths:
+
+```css
 [data-p] {
 	padding: calc(var(--spacing) * attr(data-p type(<number>), 1));
+}
+@supports not (padding: attr(x type(<length>), 1px)) {
+	[data-p="6"] {
+		padding: calc(var(--spacing) * 6);
+	}
 }
 ```
 
 The guard is false in modern browsers, so they skip the generated block and use `attr()`
-directly, keeping its unbounded behaviour. Older browsers cannot parse the `attr()`
-declaration at all, so they drop it and use the generated rule. Load order never matters.
+directly, keeping its unbounded behaviour.
+
+The fallback comes **after** the rule it stands in for. Not every browser drops an
+unsupported `attr()` declaration at parse time. Safari keeps it, so a fallback placed
+earlier would lose to it and you would see nothing.
 
 Only the values actually present in `index.html` get generated, because the plugin is
 configured with `content: ["*.html"]`.

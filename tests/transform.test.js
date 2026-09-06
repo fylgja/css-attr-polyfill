@@ -30,7 +30,17 @@ describe("transform", () => {
 		assert.ok(css.includes("attr(data-py type(<number>), 1)"));
 	});
 
-	it("puts the fallback before its source rule, holding the source's cascade position", () => {
+	it("puts the fallback after the declaration it replaces", () => {
+		// Browsers without attr() v2 do not reliably drop the declaration at parse time.
+		// Safari keeps it, so a fallback placed earlier would lose to it.
+		const { css } = transform(SPACING, { safelist: { "data-py": "2" } });
+		assert.ok(
+			css.indexOf("attr(data-py") < css.indexOf('[data-py="2"]'),
+			"the fallback must outrank the attr() declaration it stands in for",
+		);
+	});
+
+	it("keeps the fallback ahead of later rules in the stylesheet", () => {
 		const source = `${SPACING}\n.override { padding-block: 0; }`;
 		const { css } = transform(source, { safelist: { "data-py": "0..2" } });
 		assert.ok(

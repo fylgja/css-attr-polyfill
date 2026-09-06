@@ -131,13 +131,17 @@ them replace it instead.
 
 ## Output modes
 
-`combined` (the default) splices each fallback in immediately before its source rule, so the
-generated CSS keeps that rule's position in the cascade. Every byte the compiler does not
-touch is preserved exactly as authored, including your own formatting and comments.
+`combined` (the default) splices each fallback in immediately after its source rule. It has
+to come after, not before: browsers without `attr()` v2 do not reliably drop the declaration
+at parse time. Safari keeps it, so a fallback placed earlier would lose to the very rule it
+stands in for. Staying adjacent keeps the source rule's position relative to everything else
+in the stylesheet. Every byte the compiler does not touch is preserved exactly as authored,
+including your own formatting and comments.
 
 `split` leaves the source stylesheet untouched and returns a second stylesheet containing
 only the fallbacks, mirroring any `@layer`, `@media` or `@container` nesting. The `@supports`
-guard sits innermost so layer names still register.
+guard sits innermost so layer names still register. **Load the fallback stylesheet after the
+source**, for the same reason combined mode places it after.
 
 ## What it will not do
 
@@ -193,8 +197,10 @@ export default {
 };
 ```
 
-Runs before Vite's own CSS handling, so generated rules take part in bundling and
-minification.
+Deliberately not a `pre` plugin. Vite inlines `@import` inside its own CSS plugin, so a
+`pre` plugin would only see the entry stylesheet and silently generate nothing. Running
+afterwards means it sees the CSS that actually ships, whether you assemble it with `@import`
+or with JavaScript imports.
 
 ### PostCSS
 
