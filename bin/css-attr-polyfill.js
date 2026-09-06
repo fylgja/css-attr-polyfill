@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-import { readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { dirname } from "node:path";
 import { parseArgs } from "node:util";
 import { pathToFileURL } from "node:url";
 import { compile } from "../src/compile.js";
@@ -38,6 +39,18 @@ const { positionals, values: flags } = parseArgs({
 		supports: { type: "string" },
 	},
 });
+
+/**
+ * Write a file, creating its directory when it does not exist yet.
+ *
+ * @param {string} path
+ * @param {string} contents
+ * @returns {Promise<void>}
+ */
+async function write(path, contents) {
+	await mkdir(dirname(path), { recursive: true });
+	await writeFile(path, contents);
+}
 
 /**
  * @param {string} message
@@ -96,11 +109,11 @@ if (!flags.quiet) {
 if (options.mode === "split") {
 	const fallbackOut = flags["fallback-out"] ?? fileConfig.fallbackOut;
 	if (!fallbackOut) fail("--split requires --fallback-out");
-	await writeFile(fallbackOut, result.fallback);
-	if (flags.output) await writeFile(flags.output, result.css);
+	await write(fallbackOut, result.fallback);
+	if (flags.output) await write(flags.output, result.css);
 	if (!flags.quiet) console.error(`wrote ${fallbackOut}`);
 } else if (flags.output) {
-	await writeFile(flags.output, result.css);
+	await write(flags.output, result.css);
 	if (!flags.quiet) console.error(`wrote ${flags.output}`);
 } else {
 	process.stdout.write(result.css);

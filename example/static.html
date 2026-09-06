@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<title>attr() v2 fallback, forced</title>
+	</head>
+	<body>
+		<main>
+			<h1>The generated fallback, on its own</h1>
+			<p>
+				This page loads <em>only</em> the compiled output, with no
+				<code>attr()</code> anywhere and the <code>@supports</code> guard forced on.
+				Rendering:
+				<span class="badge forced"></span>
+			</p>
+			<p class="nav">
+				<strong>You are here:</strong> generated CSS only
+				<a href="/index.html">&larr; Back to the real stylesheet</a>
+			</p>
+			<p class="hint">
+				Both pages share the same markup from <code>src/demo.js</code>. If they look
+				identical, the compiler did its job.
+			</p>
+			<div id="demo"></div>
+		</main>
+		<script type="module" src="/src/static.js"></script>
+	</body>
+</html>

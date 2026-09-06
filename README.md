@@ -165,6 +165,16 @@ element the declaration applies to, so `.card[data-py] > p` generates
 `.card[data-py] > p:where([data-py="2"])`. When the attribute is absent from the selector,
 the added match is wrapped in `:where()` so specificity does not change.
 
+## Try it
+
+`example/` is a Vite setup with two pages sharing identical markup: one loading the real
+stylesheet, one loading only the compiled fallback with its guard forced on. If they look
+the same, the compiler did its job.
+
+```bash
+cd example && npm install && npm run dev
+```
+
 ## Integrations
 
 All three run in combined mode, since a build pipeline expects one stylesheet in and one

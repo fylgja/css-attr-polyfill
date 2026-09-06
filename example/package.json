@@ -1,0 +1,20 @@
+{
+	"name": "css-attr-polyfill-example",
+	"private": true,
+	"type": "module",
+	"scripts": {
+		"generate": "css-attr-polyfill src/utilities.css --split --fallback-out src/generated/static-only.css --supports \"(padding: 1px)\" -c \"*.html\" -c \"src/**/*.js\"",
+		"predev": "npm run generate",
+		"dev": "vite",
+		"prebuild": "npm run generate",
+		"build": "vite build",
+		"preview": "vite preview",
+		"inspect": "css-attr-polyfill src/utilities.css -c \"*.html\" -c \"src/**/*.js\""
+	},
+	"dependencies": {
+		"@fylgja/css-attr-polyfill": "file:.."
+	},
+	"devDependencies": {
+		"vite": "^7.1.0"
+	}
+}

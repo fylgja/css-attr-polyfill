@@ -105,9 +105,17 @@ describe("indentAt and detectIndentUnit", () => {
 	});
 
 	it("guesses the stylesheet's indentation", () => {
-		assert.equal(detectIndentUnit("a {\n  color: red\n}"), "  ");
-		assert.equal(detectIndentUnit("a {\n\tcolor: red\n}"), "\t");
-		assert.equal(detectIndentUnit("a { color: red }"), "  ");
+		const unit = (css) => detectIndentUnit(css, parseStylesheet(css));
+
+		assert.equal(unit("a {\n  color: red\n}"), "  ");
+		assert.equal(unit("a {\n\tcolor: red\n}"), "\t");
+		assert.equal(unit("a {\n    color: red\n}"), "    ");
+		assert.equal(unit("a { color: red }"), "  ");
+	});
+
+	it("is not fooled by an aligned block comment above the first rule", () => {
+		const css = "/*\n * A banner comment.\n */\na {\n\tcolor: red\n}";
+		assert.equal(detectIndentUnit(css, parseStylesheet(css)), "\t");
 	});
 });
 

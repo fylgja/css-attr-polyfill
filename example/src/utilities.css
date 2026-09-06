@@ -1,0 +1,40 @@
+/*
+ * The source stylesheet. Every value here is written once, using attr() v2.
+ * Nothing in this file is duplicated by hand for older browsers.
+ */
+
+[data-p] {
+	padding: calc(var(--spacing) * attr(data-p type(<number>), 1));
+}
+
+[data-px] {
+	padding-inline: calc(var(--spacing) * attr(data-px type(<number>), 1));
+}
+
+[data-py] {
+	padding-block: calc(var(--spacing) * attr(data-py type(<number>), 1));
+}
+
+[data-size] {
+	block-size: calc(var(--spacing) * attr(data-size type(<number>), 1));
+	inline-size: calc(var(--spacing) * attr(data-size type(<number>), 1));
+}
+
+/* attr-polyfill: data-radius 0px, 4px, 10px, 999px */
+[data-radius] {
+	border-radius: attr(data-radius type(<length>), 0px);
+}
+
+[data-tint] {
+	background-color: attr(data-tint type(<color>), var(--surface));
+}
+
+[data-label]::after {
+	content: attr(data-label);
+}
+
+@media (width >= 40rem) {
+	[data-md-p] {
+		padding: calc(var(--spacing) * attr(data-md-p type(<number>), 1));
+	}
+}

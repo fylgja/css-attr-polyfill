@@ -160,7 +160,7 @@ export function transform(css, options = {}) {
 	} = options;
 
 	const nodes = parseStylesheet(css);
-	const unit = detectIndentUnit(css);
+	const unit = detectIndentUnit(css, nodes);
 	const resolve = createResolver({
 		annotationMode,
 		annotations: parseAnnotations(collectComments(nodes)),

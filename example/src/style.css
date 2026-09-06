@@ -1,0 +1,140 @@
+/*
+ * Page furniture only. Nothing here uses attr(), so the demo utilities stay
+ * clearly separated from the styling of the page around them.
+ */
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	padding: 2rem 1.5rem 4rem;
+	font-family: ui-sans-serif, system-ui, sans-serif;
+	line-height: 1.5;
+	color: #16202c;
+	background: #fff;
+}
+
+main {
+	max-inline-size: 52rem;
+	margin-inline: auto;
+}
+
+h1 {
+	margin: 0 0 0.25rem;
+	font-size: 1.5rem;
+}
+
+h2 {
+	margin: 0 0 0.25rem;
+	font-size: 1rem;
+	font-weight: 600;
+}
+
+section {
+	padding-block: 1.5rem;
+	border-block-start: 1px solid #e3e8ef;
+}
+
+code {
+	font-size: 0.85em;
+	background: #eef1f6;
+	padding: 0.1em 0.35em;
+	border-radius: 4px;
+}
+
+.hint {
+	margin: 0 0 0.75rem;
+	font-size: 0.875rem;
+	color: #5a6b7f;
+}
+
+.row {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.75rem;
+	align-items: center;
+}
+
+.row.baseline {
+	align-items: flex-end;
+}
+
+.chip {
+	background: #dbe6f5;
+	border: 1px solid #b9cbe6;
+	border-radius: 6px;
+	font-size: 0.8rem;
+	font-variant-numeric: tabular-nums;
+}
+
+.box {
+	display: inline-block;
+	min-inline-size: 1rem;
+	min-block-size: 1rem;
+	background: #cbd6e6;
+	border: 1px solid #a9bcd6;
+}
+
+.box.tinted {
+	background: #dbe6f5;
+	inline-size: 3.5rem;
+	block-size: 3.5rem;
+}
+
+.labelled::after {
+	margin-inline-start: 0.4em;
+	font-weight: 700;
+	text-transform: uppercase;
+	font-size: 0.7em;
+	letter-spacing: 0.04em;
+}
+
+/* Pure CSS feature detection, no JavaScript involved. */
+.badge {
+	display: inline-block;
+	padding: 0.25rem 0.6rem;
+	border-radius: 999px;
+	font-size: 0.8rem;
+	font-weight: 600;
+	background: #fde8c8;
+	color: #7a4b00;
+}
+
+.badge::after {
+	content: "generated static CSS";
+}
+
+@supports (padding: attr(x type(<length>), 1px)) {
+	.badge {
+		background: #d6f0dd;
+		color: #14532d;
+	}
+
+	.badge::after {
+		content: "native attr() v2";
+	}
+}
+
+.nav {
+	display: flex;
+	gap: 1rem;
+	align-items: center;
+	margin-block: 1rem 0;
+	font-size: 0.9rem;
+}
+
+.nav a {
+	color: #1d4ed8;
+}
+
+/* The forced page always renders the generated CSS, whatever the browser supports. */
+.badge.forced {
+	background: #fde8c8;
+	color: #7a4b00;
+}
+
+.badge.forced::after {
+	content: "generated static CSS, forced on";
+}

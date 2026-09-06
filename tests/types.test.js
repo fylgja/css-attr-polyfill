@@ -17,6 +17,12 @@ describe("renderValue", () => {
 		assert.equal(renderValue("oklch(50% 0 0)", syntax("<color>")), "oklch(50% 0 0)");
 	});
 
+	it("accepts every CSS named colour, not a hand-picked subset", () => {
+		for (const name of ["rebeccapurple", "cornflowerblue", "lightgoldenrodyellow", "peru"]) {
+			assert.equal(renderValue(name, syntax("<color>")), name);
+		}
+	});
+
 	it("rejects values that do not, so attr()'s own fallback applies instead", () => {
 		assert.equal(renderValue("abc", syntax("<number>")), null);
 		assert.equal(renderValue("2", syntax("<length>")), null);

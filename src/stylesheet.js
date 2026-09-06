@@ -287,11 +287,27 @@ export function indentAt(css, start) {
 /**
  * Guess the indentation a stylesheet uses, so generated rules match the file they join.
  *
+ * Measured from the first declaration that sits inside a rule, rather than from raw text,
+ * so an aligned block comment cannot be mistaken for the file's indentation.
+ *
  * @param {string} css
+ * @param {Node[]} nodes the same stylesheet, already parsed
  * @returns {string} one indentation level, defaulting to two spaces
  */
-export function detectIndentUnit(css) {
-	const match = /\n([ \t]+)\S/.exec(css);
-	if (!match) return "  ";
-	return match[1].startsWith("\t") ? "\t" : " ".repeat(match[1].length);
+export function detectIndentUnit(css, nodes) {
+	let unit = null;
+
+	walkRules(nodes, (rule) => {
+		if (unit) return;
+
+		const declaration = rule.nodes.find((node) => node.type === "declaration");
+		if (!declaration) return;
+
+		const outer = indentAt(css, rule.start);
+		const inner = indentAt(css, declaration.start);
+		if (inner.startsWith(outer) && inner.length > outer.length)
+			unit = inner.slice(outer.length);
+	});
+
+	return unit ?? "  ";
 }
