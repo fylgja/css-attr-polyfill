@@ -28,11 +28,18 @@ function buildRulesFor(rule, resolve, options) {
 			options,
 		);
 
-		warnings.push(...result.warnings.map((message) => `${rule.selector} { ${message} }`));
+		warnings.push(
+			...result.warnings.map(
+				(message) => `${rule.selector} { ${message} }`,
+			),
+		);
 
 		for (const generated of result.rules) {
 			const declarations = bySelector.get(generated.selector) ?? [];
-			const declaration = postcss.decl({ prop: generated.prop, value: generated.value });
+			const declaration = postcss.decl({
+				prop: generated.prop,
+				value: generated.value,
+			});
 			declaration.raws = { before: " ", between: ": " };
 			declarations.push(declaration);
 			bySelector.set(generated.selector, declarations);
@@ -82,9 +89,12 @@ export function attrPolyfill(options = {}) {
 
 		async OnceExit(root, { result }) {
 			if (mode === "split") {
-				result.warn("split mode is not available in the PostCSS plugin, using combined", {
-					plugin: PLUGIN,
-				});
+				result.warn(
+					"split mode is not available in the PostCSS plugin, using combined",
+					{
+						plugin: PLUGIN,
+					},
+				);
 			}
 
 			let scanned = new Map();
@@ -131,20 +141,27 @@ export function attrPolyfill(options = {}) {
 				if (rule.parent?.type === "rule") return;
 
 				const built = buildRulesFor(rule, resolve, { maxValues });
-				for (const text of built.warnings) result.warn(text, { plugin: PLUGIN });
-				if (built.rules.length) pending.push({ generated: built.rules, source: rule });
+				for (const text of built.warnings)
+					result.warn(text, { plugin: PLUGIN });
+				if (built.rules.length)
+					pending.push({ generated: built.rules, source: rule });
 			});
 
 			for (const { source, generated } of pending) {
-				const indent = /\n([ \t]*)$/.exec(source.raws.before ?? "")?.[1] ?? "";
-				const guard = postcss.atRule({ name: "supports", params: supports });
+				const indent =
+					/\n([ \t]*)$/.exec(source.raws.before ?? "")?.[1] ?? "";
+				const guard = postcss.atRule({
+					name: "supports",
+					params: supports,
+				});
 				guard.append(generated);
 				guard.raws = {
 					after: `\n${indent}`,
 					before: `\n${indent}`,
 					between: " ",
 				};
-				for (const rule of guard.nodes) rule.raws.before = `\n${indent}  `;
+				for (const rule of guard.nodes)
+					rule.raws.before = `\n${indent}  `;
 				// After, never before. Browsers without attr() v2 do not reliably drop the
 				// declaration at parse time, so an earlier fallback would lose to it.
 				source.parent.insertAfter(source, guard);

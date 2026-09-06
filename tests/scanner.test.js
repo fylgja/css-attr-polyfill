@@ -12,22 +12,32 @@ describe("collectAttributeNames", () => {
             [anchor] { anchor-name: attr(anchor type(<custom-ident>)); }
             .x { color: red; }
         `;
-		assert.deepEqual([...collectAttributeNames(css)].sort(), ["anchor", "data-py"]);
+		assert.deepEqual([...collectAttributeNames(css)].sort(), [
+			"anchor",
+			"data-py",
+		]);
 	});
 
 	it("ignores attr() forms that cannot be compiled", () => {
-		assert.deepEqual([...collectAttributeNames("a { b: attr(ns|foo type(<number>)); }")], []);
+		assert.deepEqual(
+			[...collectAttributeNames("a { b: attr(ns|foo type(<number>)); }")],
+			[],
+		);
 	});
 });
 
 describe("extractAttrValues", () => {
 	it("reads double, single and unquoted HTML attributes", () => {
-		const { values } = extract(`<div data-py="2"></div><b data-py='3'><i data-py=4>`);
+		const { values } = extract(
+			`<div data-py="2"></div><b data-py='3'><i data-py=4>`,
+		);
 		assert.deepEqual([...values.get("data-py")], ["2", "3", "4"]);
 	});
 
 	it("reads JSX and Svelte brace literals", () => {
-		const { values } = extract(`<div data-py={2} /><div data-py={"3"} /><div data-py={'4'} />`);
+		const { values } = extract(
+			`<div data-py={2} /><div data-py={"3"} /><div data-py={'4'} />`,
+		);
 		assert.deepEqual([...values.get("data-py")], ["2", "3", "4"]);
 	});
 
@@ -63,7 +73,10 @@ describe("extractAttrValues", () => {
 	});
 
 	it("does not match a longer attribute name as a shorter one", () => {
-		const { values } = extractAttrValues(`<div data-md-py="2">`, ["data-py", "data-md-py"]);
+		const { values } = extractAttrValues(`<div data-md-py="2">`, [
+			"data-py",
+			"data-md-py",
+		]);
 		assert.equal(values.get("data-py"), undefined);
 		assert.deepEqual([...values.get("data-md-py")], ["2"]);
 	});
@@ -79,7 +92,9 @@ describe("extractAttrValues", () => {
 	});
 
 	it("collects the same attribute across many elements, deduplicated", () => {
-		const { values } = extract(`<a data-py="2"><b data-py="2"><c data-py="3">`);
+		const { values } = extract(
+			`<a data-py="2"><b data-py="2"><c data-py="3">`,
+		);
 		assert.deepEqual([...values.get("data-py")], ["2", "3"]);
 	});
 });

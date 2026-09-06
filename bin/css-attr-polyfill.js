@@ -78,7 +78,8 @@ function parseSafelist(entries) {
 	return Object.fromEntries(
 		entries.map((entry) => {
 			const separator = entry.indexOf("=");
-			if (separator < 1) fail(`--safelist expects name=spec, got "${entry}"`);
+			if (separator < 1)
+				fail(`--safelist expects name=spec, got "${entry}"`);
 			return [entry.slice(0, separator), entry.slice(separator + 1)];
 		}),
 	);
@@ -93,13 +94,18 @@ const options = {
 	...fileConfig,
 	content: flags.content ?? fileConfig.content ?? [],
 	mode: flags.split ? "split" : (fileConfig.mode ?? "combined"),
-	safelist: { ...fileConfig.safelist, ...parseSafelist(flags.safelist ?? []) },
+	safelist: {
+		...fileConfig.safelist,
+		...parseSafelist(flags.safelist ?? []),
+	},
 };
 
 if (flags.supports) options.supports = flags.supports;
 if (flags["max-values"]) options.maxValues = Number(flags["max-values"]);
 
-const source = await readFile(input, "utf8").catch(() => fail(`cannot read ${input}`));
+const source = await readFile(input, "utf8").catch(() =>
+	fail(`cannot read ${input}`),
+);
 const result = await compile(source, { ...options, from: input });
 
 if (!flags.quiet) {

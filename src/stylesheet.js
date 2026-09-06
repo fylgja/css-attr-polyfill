@@ -143,7 +143,12 @@ function parseNodes(css, from, to) {
 		if (css[index] === "/" && css[index + 1] === "*") {
 			const close = css.indexOf("*/", index + 2);
 			const end = close === -1 ? to : close + 2;
-			nodes.push({ end, start: index, text: css.slice(index + 2, end - 2), type: "comment" });
+			nodes.push({
+				end,
+				start: index,
+				text: css.slice(index + 2, end - 2),
+				type: "comment",
+			});
 			index = end;
 			continue;
 		}
@@ -162,7 +167,10 @@ function parseNodes(css, from, to) {
 			const char = css[cursor];
 			if (char === "(") depth++;
 			else if (char === ")") depth = Math.max(0, depth - 1);
-			else if (depth === 0 && (char === "{" || char === ";" || char === "}")) {
+			else if (
+				depth === 0 &&
+				(char === "{" || char === ";" || char === "}")
+			) {
 				terminator = char;
 				break;
 			}
@@ -187,7 +195,13 @@ function parseNodes(css, from, to) {
 					type: "atrule",
 				});
 			} else {
-				nodes.push({ end, nodes: children, selector: prelude, start, type: "rule" });
+				nodes.push({
+					end,
+					nodes: children,
+					selector: prelude,
+					start,
+					type: "rule",
+				});
 			}
 
 			index = end;
@@ -212,7 +226,12 @@ function parseNodes(css, from, to) {
 
 		const declaration = prelude ? splitDeclaration(prelude) : null;
 		if (declaration) {
-			nodes.push({ ...declaration, end: cursor, start, type: "declaration" });
+			nodes.push({
+				...declaration,
+				end: cursor,
+				start,
+				type: "declaration",
+			});
 		}
 
 		if (terminator === "}") {
@@ -300,7 +319,9 @@ export function detectIndentUnit(css, nodes) {
 	walkRules(nodes, (rule) => {
 		if (unit) return;
 
-		const declaration = rule.nodes.find((node) => node.type === "declaration");
+		const declaration = rule.nodes.find(
+			(node) => node.type === "declaration",
+		);
 		if (!declaration) return;
 
 		const outer = indentAt(css, rule.start);

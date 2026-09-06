@@ -70,7 +70,8 @@ export function extractAttrValues(text, attributeNames) {
 	if (names.length === 0) return { dynamic, values };
 
 	for (const match of text.matchAll(buildPattern(names))) {
-		const [, binding, name, doubleQuoted, singleQuoted, braced, bare] = match;
+		const [, binding, name, doubleQuoted, singleQuoted, braced, bare] =
+			match;
 
 		if (binding) {
 			dynamic.add(name);
@@ -124,7 +125,10 @@ export async function scan({ content, attributes, cwd = process.cwd() }) {
 		if (!entry.isFile()) continue;
 		files++;
 
-		const text = await readFile(`${entry.parentPath}/${entry.name}`, "utf8");
+		const text = await readFile(
+			`${entry.parentPath}/${entry.name}`,
+			"utf8",
+		);
 		const found = extractAttrValues(text, names);
 
 		for (const [name, set] of found.values) {

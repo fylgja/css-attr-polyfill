@@ -41,18 +41,22 @@ function splitOnCommas(nodes) {
 function readType(node) {
 	if (node.type === "function" && node.value === "type") {
 		const syntax = valueParser.stringify(node.nodes).trim();
-		if (!isKnownSyntax(syntax)) return { error: `unsupported type(${syntax})` };
+		if (!isKnownSyntax(syntax))
+			return { error: `unsupported type(${syntax})` };
 		return { type: { kind: "syntax", syntax } };
 	}
 
 	if (node.type === "word") {
-		if (node.value === "raw-string") return { type: { kind: "raw-string" } };
+		if (node.value === "raw-string")
+			return { type: { kind: "raw-string" } };
 		if (isAttrUnit(node.value))
 			return { type: { kind: "unit", unit: node.value.toLowerCase() } };
 		return { error: `unrecognised attr() type "${node.value}"` };
 	}
 
-	return { error: `unrecognised attr() type "${valueParser.stringify(node)}"` };
+	return {
+		error: `unrecognised attr() type "${valueParser.stringify(node)}"`,
+	};
 }
 
 /**
@@ -76,31 +80,50 @@ export function parseAttrRefs(value) {
 					.join(",")
 					.trim()
 			: null;
-		const significant = head.filter((n) => n.type !== "space" && n.type !== "comment");
+		const significant = head.filter(
+			(n) => n.type !== "space" && n.type !== "comment",
+		);
 
 		const push = (partial) =>
-			refs.push({ fallback, index, type: { kind: "string" }, ...partial });
+			refs.push({
+				fallback,
+				index,
+				type: { kind: "string" },
+				...partial,
+			});
 
 		if (significant.length === 0) {
-			push({ name: "", unsupported: "attr() is missing an attribute name" });
+			push({
+				name: "",
+				unsupported: "attr() is missing an attribute name",
+			});
 			return;
 		}
 
 		const [nameNode, typeNode, ...rest] = significant;
 		if (nameNode.type !== "word") {
-			push({ name: "", unsupported: "attr() attribute name is not an identifier" });
+			push({
+				name: "",
+				unsupported: "attr() attribute name is not an identifier",
+			});
 			return;
 		}
 
 		const name = nameNode.value;
 		// Namespaced attribute names cannot be expressed by a plain attribute selector.
 		if (name.includes("|")) {
-			push({ name, unsupported: `namespaced attribute "${name}" is not supported` });
+			push({
+				name,
+				unsupported: `namespaced attribute "${name}" is not supported`,
+			});
 			return;
 		}
 
 		if (rest.length) {
-			push({ name, unsupported: "attr() has unexpected extra arguments" });
+			push({
+				name,
+				unsupported: "attr() has unexpected extra arguments",
+			});
 			return;
 		}
 

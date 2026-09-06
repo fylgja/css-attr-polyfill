@@ -66,7 +66,8 @@ function expandRange(from, to, step) {
 	const values = [];
 
 	for (let i = 0; ; i++) {
-		const next = Math.round((start + direction * i * increment) * scale) / scale;
+		const next =
+			Math.round((start + direction * i * increment) * scale) / scale;
 		if (direction > 0 ? next > end : next < end) break;
 		// String() rather than toFixed(): markup writes data-py="1", never "1.0".
 		values.push(String(next));
@@ -137,11 +138,17 @@ export function createResolver({
 			annotationMode === "override" && annotated.length
 				? []
 				: Object.entries(safelist)
-						.filter(([pattern]) => matchesPattern(pattern, attribute))
+						.filter(([pattern]) =>
+							matchesPattern(pattern, attribute),
+						)
 						.flatMap(([, spec]) => expandSpec(spec));
 
 		const values = [
-			...new Set([...fromConfig, ...annotated, ...(scanned.get(attribute) ?? [])]),
+			...new Set([
+				...fromConfig,
+				...annotated,
+				...(scanned.get(attribute) ?? []),
+			]),
 		];
 		cache.set(attribute, values);
 		return values;

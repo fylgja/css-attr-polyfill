@@ -1,70 +1,70 @@
 {
-	"name": "@fylgja/css-attr-polyfill",
-	"version": "0.1.0",
-	"description": "Compile CSS attr() v2 into static fallbacks for browsers that do not support it",
-	"homepage": "https://fylgja.dev/",
-	"author": "Fylgja",
-	"license": "MIT",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/fylgja/css-attr-polyfill"
-	},
-	"bugs": "https://github.com/fylgja/css-attr-polyfill/issues",
-	"keywords": [
-		"fylgja",
-		"css",
-		"attr",
-		"polyfill",
-		"fallback",
-		"postcss",
-		"lightningcss"
-	],
-	"type": "module",
-	"main": "index.js",
-	"exports": {
-		".": "./index.js",
-		"./postcss": "./src/adapters/postcss.js",
-		"./lightningcss": "./src/adapters/lightningcss.js",
-		"./vite": "./src/adapters/vite.js"
-	},
-	"bin": {
-		"css-attr-polyfill": "./bin/css-attr-polyfill.js"
-	},
-	"files": [
-		"bin",
-		"index.js",
-		"src"
-	],
-	"engines": {
-		"node": ">=22.0.0"
-	},
-	"scripts": {
-		"format": "prettier --write .",
-		"format:check": "prettier --check .",
-		"test": "node --test tests/*.test.js"
-	},
-	"dependencies": {
-		"postcss-selector-parser": "^7.1.0",
-		"postcss-value-parser": "^4.2.0"
-	},
-	"peerDependencies": {
-		"lightningcss": "*",
-		"postcss": "^8.4.0",
-		"vite": "*"
-	},
-	"peerDependenciesMeta": {
-		"lightningcss": {
-			"optional": true
-		},
-		"postcss": {
-			"optional": true
-		},
-		"vite": {
-			"optional": true
-		}
-	},
-	"devDependencies": {
-		"postcss": "^8.5.6",
-		"prettier": "^3.9.6"
-	}
+  "name": "@fylgja/css-attr-polyfill",
+  "version": "0.1.0",
+  "description": "Compile CSS attr() v2 into static fallbacks for browsers that do not support it",
+  "homepage": "https://fylgja.dev/",
+  "author": "Fylgja",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fylgja/css-attr-polyfill"
+  },
+  "bugs": "https://github.com/fylgja/css-attr-polyfill/issues",
+  "keywords": [
+    "fylgja",
+    "css",
+    "attr",
+    "polyfill",
+    "fallback",
+    "postcss",
+    "lightningcss"
+  ],
+  "type": "module",
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./postcss": "./src/adapters/postcss.js",
+    "./lightningcss": "./src/adapters/lightningcss.js",
+    "./vite": "./src/adapters/vite.js"
+  },
+  "bin": {
+    "css-attr-polyfill": "./bin/css-attr-polyfill.js"
+  },
+  "files": [
+    "bin",
+    "index.js",
+    "src"
+  ],
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "test": "node --test tests/*.test.js"
+  },
+  "dependencies": {
+    "postcss-selector-parser": "^7.1.0",
+    "postcss-value-parser": "^4.2.0"
+  },
+  "peerDependencies": {
+    "lightningcss": "*",
+    "postcss": "^8.4.0",
+    "vite": "*"
+  },
+  "peerDependenciesMeta": {
+    "lightningcss": {
+      "optional": true
+    },
+    "postcss": {
+      "optional": true
+    },
+    "vite": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "postcss": "^8.5.6",
+    "prettier": "^3.9.6"
+  }
 }

@@ -4,12 +4,21 @@ import { injectAttrValue } from "../src/selector.js";
 
 describe("injectAttrValue", () => {
 	it("narrows an existing bare attribute selector in place", () => {
-		assert.equal(injectAttrValue("[data-py]", "data-py", "2"), '[data-py="2"]');
+		assert.equal(
+			injectAttrValue("[data-py]", "data-py", "2"),
+			'[data-py="2"]',
+		);
 	});
 
 	it("narrows inside :where() and :is(), preserving their specificity behaviour", () => {
-		assert.equal(injectAttrValue(":where([data-py])", "data-py", "2"), ':where([data-py="2"])');
-		assert.equal(injectAttrValue(":is([data-py])", "data-py", "2"), ':is([data-py="2"])');
+		assert.equal(
+			injectAttrValue(":where([data-py])", "data-py", "2"),
+			':where([data-py="2"])',
+		);
+		assert.equal(
+			injectAttrValue(":is([data-py])", "data-py", "2"),
+			':is([data-py="2"])',
+		);
 	});
 
 	it("targets the subject compound, never an ancestor", () => {
@@ -25,8 +34,14 @@ describe("injectAttrValue", () => {
 	});
 
 	it("adds no specificity when the attribute is absent from the selector", () => {
-		assert.equal(injectAttrValue(".card", "data-py", "2"), '.card:where([data-py="2"])');
-		assert.equal(injectAttrValue("a[href]", "data-py", "2"), 'a[href]:where([data-py="2"])');
+		assert.equal(
+			injectAttrValue(".card", "data-py", "2"),
+			'.card:where([data-py="2"])',
+		);
+		assert.equal(
+			injectAttrValue("a[href]", "data-py", "2"),
+			'a[href]:where([data-py="2"])',
+		);
 	});
 
 	it("inserts before a pseudo-element, since attr() reads the originating element", () => {
@@ -56,12 +71,21 @@ describe("injectAttrValue", () => {
 
 	it("quotes values that are not valid identifiers", () => {
 		// [data-py=0.5] would be invalid CSS: unquoted values must be identifiers.
-		assert.equal(injectAttrValue("[data-py]", "data-py", "0.5"), '[data-py="0.5"]');
-		assert.equal(injectAttrValue("[data-py]", "data-py", "2"), '[data-py="2"]');
+		assert.equal(
+			injectAttrValue("[data-py]", "data-py", "0.5"),
+			'[data-py="0.5"]',
+		);
+		assert.equal(
+			injectAttrValue("[data-py]", "data-py", "2"),
+			'[data-py="2"]',
+		);
 	});
 
 	it("escapes quotes and backslashes in the value", () => {
-		assert.equal(injectAttrValue("[data-q]", "data-q", 'say "hi"'), '[data-q="say \\"hi\\""]');
+		assert.equal(
+			injectAttrValue("[data-q]", "data-q", 'say "hi"'),
+			'[data-q="say \\"hi\\""]',
+		);
 	});
 
 	it("falls back to appending when the attribute appears more than once in the subject", () => {

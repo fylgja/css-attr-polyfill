@@ -44,12 +44,12 @@ in place, so the built CSS contains both paths:
 
 ```css
 [data-p] {
-	padding: calc(var(--spacing) * attr(data-p type(<number>), 1));
+  padding: calc(var(--spacing) * attr(data-p type(<number>), 1));
 }
 @supports not (padding: attr(x type(<length>), 1px)) {
-	[data-p="6"] {
-		padding: calc(var(--spacing) * 6);
-	}
+  [data-p="6"] {
+    padding: calc(var(--spacing) * 6);
+  }
 }
 ```
 

@@ -1,6 +1,11 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
-import { isAttrUnit, isKnownSyntax, quoteString, renderValue } from "../src/types.js";
+import {
+	isAttrUnit,
+	isKnownSyntax,
+	quoteString,
+	renderValue,
+} from "../src/types.js";
 
 const syntax = (s) => ({ kind: "syntax", syntax: s });
 
@@ -14,11 +19,19 @@ describe("renderValue", () => {
 		assert.equal(renderValue("90deg", syntax("<angle>")), "90deg");
 		assert.equal(renderValue("--tip", syntax("<custom-ident>")), "--tip");
 		assert.equal(renderValue("#fff", syntax("<color>")), "#fff");
-		assert.equal(renderValue("oklch(50% 0 0)", syntax("<color>")), "oklch(50% 0 0)");
+		assert.equal(
+			renderValue("oklch(50% 0 0)", syntax("<color>")),
+			"oklch(50% 0 0)",
+		);
 	});
 
 	it("accepts every CSS named colour, not a hand-picked subset", () => {
-		for (const name of ["rebeccapurple", "cornflowerblue", "lightgoldenrodyellow", "peru"]) {
+		for (const name of [
+			"rebeccapurple",
+			"cornflowerblue",
+			"lightgoldenrodyellow",
+			"peru",
+		]) {
 			assert.equal(renderValue(name, syntax("<color>")), name);
 		}
 	});
@@ -37,8 +50,18 @@ describe("renderValue", () => {
 	});
 
 	it("rejects CSS-wide keywords as custom idents", () => {
-		for (const keyword of ["initial", "inherit", "unset", "revert", "REVERT-LAYER"]) {
-			assert.equal(renderValue(keyword, syntax("<custom-ident>")), null, keyword);
+		for (const keyword of [
+			"initial",
+			"inherit",
+			"unset",
+			"revert",
+			"REVERT-LAYER",
+		]) {
+			assert.equal(
+				renderValue(keyword, syntax("<custom-ident>")),
+				null,
+				keyword,
+			);
 		}
 	});
 

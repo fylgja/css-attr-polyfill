@@ -1,21 +1,21 @@
 {
-	"name": "css-attr-polyfill-example",
-	"private": true,
-	"type": "module",
-	"scripts": {
-		"dev": "vite",
-		"build": "vite build",
-		"preview": "vite preview",
-		"inspect": "css-attr-polyfill src/utilities.css -c \"*.html\""
-	},
-	"dependencies": {
-		"@fylgja/badge": "^2.0.0",
-		"@fylgja/base": "^2.1.6",
-		"@fylgja/card": "^2.0.2",
-		"@fylgja/css-attr-polyfill": "file:..",
-		"@fylgja/tokens": "^2.2.1"
-	},
-	"devDependencies": {
-		"vite": "^7.1.0"
-	}
+  "name": "css-attr-polyfill-example",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "inspect": "css-attr-polyfill src/utilities.css -c \"*.html\""
+  },
+  "dependencies": {
+    "@fylgja/badge": "^2.0.0",
+    "@fylgja/base": "^2.1.6",
+    "@fylgja/card": "^2.0.2",
+    "@fylgja/css-attr-polyfill": "file:..",
+    "@fylgja/tokens": "^2.2.1"
+  },
+  "devDependencies": {
+    "vite": "^7.1.0"
+  }
 }

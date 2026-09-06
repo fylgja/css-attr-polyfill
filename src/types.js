@@ -10,7 +10,8 @@ const NUMBER = /^[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?$/;
 const INTEGER = /^[+-]?\d+$/;
 const IDENT = /^-{0,2}(?:[A-Za-z_]|[^\x00-\x7F])(?:[\w-]|[^\x00-\x7F])*$/;
 const HEX = /^#(?:[0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/;
-const COLOR_FN = /^(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color|color-mix|light-dark)\(/i;
+const COLOR_FN =
+	/^(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color|color-mix|light-dark)\(/i;
 
 const CSS_WIDE_KEYWORDS = new Set([
 	"initial",
@@ -235,7 +236,10 @@ const UNITS = {
 };
 
 /** Every unit accepted by the `<attr-unit>` form, e.g. `attr(data-w px)`. */
-const ALL_UNITS = new Set(["%", ...Object.values(UNITS).flatMap((set) => [...set])]);
+const ALL_UNITS = new Set([
+	"%",
+	...Object.values(UNITS).flatMap((set) => [...set]),
+]);
 
 /**
  * Split a dimension into its numeric part and its lowercased unit.
@@ -244,7 +248,8 @@ const ALL_UNITS = new Set(["%", ...Object.values(UNITS).flatMap((set) => [...set
  * @returns {{ number: string, unit: string } | null}
  */
 function splitDimension(value) {
-	const match = /^([+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?)([a-zA-Z%]+)$/.exec(value);
+	const match =
+		/^([+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?)([a-zA-Z%]+)$/.exec(value);
 	return match ? { number: match[1], unit: match[2].toLowerCase() } : null;
 }
 

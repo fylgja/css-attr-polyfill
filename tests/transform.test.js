@@ -6,7 +6,10 @@ import postcss from "postcss";
 import { DEFAULT_SUPPORTS_CONDITION, transform } from "../src/transform.js";
 
 const fixture = (name) =>
-	readFileSync(fileURLToPath(new URL(`./fixtures/${name}`, import.meta.url)), "utf8");
+	readFileSync(
+		fileURLToPath(new URL(`./fixtures/${name}`, import.meta.url)),
+		"utf8",
+	);
 
 const SPACING =
 	"[data-py] { padding-block: calc(var(--spacing) * attr(data-py type(<number>), 1)); }";
@@ -22,7 +25,11 @@ describe("transform", () => {
 	it("guards generated rules behind a @supports the old browsers pass", () => {
 		const { css } = transform(SPACING, { safelist: { "data-py": "0..1" } });
 		assert.ok(css.includes(`@supports ${DEFAULT_SUPPORTS_CONDITION}`));
-		assert.ok(css.includes('[data-py="1"] { padding-block: calc(var(--spacing) * 1) }'));
+		assert.ok(
+			css.includes(
+				'[data-py="1"] { padding-block: calc(var(--spacing) * 1) }',
+			),
+		);
 	});
 
 	it("keeps the original attr() declaration untouched", () => {
@@ -51,7 +58,10 @@ describe("transform", () => {
 
 	it("mirrors @media and @layer ancestry in split mode", () => {
 		const source = `@layer utils {\n  @media (width >= 768px) {\n    ${SPACING}\n  }\n}`;
-		const { fallback } = transform(source, { mode: "split", safelist: { "data-py": "0..1" } });
+		const { fallback } = transform(source, {
+			mode: "split",
+			safelist: { "data-py": "0..1" },
+		});
 		const root = postcss.parse(fallback);
 		const layer = root.first;
 		assert.equal(layer.name, "layer");
@@ -71,9 +81,14 @@ describe("transform", () => {
 
 	it("coalesces sibling rules into one @supports block in split mode", () => {
 		const source = `${SPACING}\n[data-px] { padding-inline: calc(var(--spacing) * attr(data-px type(<number>), 1)); }`;
-		const { fallback } = transform(source, { mode: "split", safelist: { "data-*": "0..1" } });
+		const { fallback } = transform(source, {
+			mode: "split",
+			safelist: { "data-*": "0..1" },
+		});
 		const guards = [];
-		postcss.parse(fallback).walkAtRules("supports", (node) => guards.push(node));
+		postcss
+			.parse(fallback)
+			.walkAtRules("supports", (node) => guards.push(node));
 		assert.equal(guards.length, 1);
 	});
 
@@ -106,7 +121,9 @@ describe("transform", () => {
 	});
 
 	it("produces output that parses back cleanly", () => {
-		const { css } = transform(fixture("spacing.css"), { safelist: { "data-*": "0..4" } });
+		const { css } = transform(fixture("spacing.css"), {
+			safelist: { "data-*": "0..4" },
+		});
 		assert.doesNotThrow(() => postcss.parse(css));
 	});
 });
@@ -117,12 +134,23 @@ describe("fixtures", () => {
 			safelist: { "data-*": "0..4 by 0.5" },
 		});
 		assert.deepEqual(warnings, []);
-		assert.ok(css.includes('[data-py="2"] { padding-block: calc(var(--spacing) * 2) }'));
-		assert.ok(css.includes('[data-py="0.5"] { padding-block: calc(var(--spacing) * 0.5) }'));
+		assert.ok(
+			css.includes(
+				'[data-py="2"] { padding-block: calc(var(--spacing) * 2) }',
+			),
+		);
+		assert.ok(
+			css.includes(
+				'[data-py="0.5"] { padding-block: calc(var(--spacing) * 0.5) }',
+			),
+		);
 		// Breakpoint variants stay inside their own media query.
 		const media = postcss
 			.parse(css)
-			.nodes.find((node) => node.type === "atrule" && node.params.includes("1024px"));
+			.nodes.find(
+				(node) =>
+					node.type === "atrule" && node.params.includes("1024px"),
+			);
 		assert.ok(media.toString().includes('[data-lg-py="2"]'));
 	});
 
@@ -132,7 +160,9 @@ describe("fixtures", () => {
 		});
 		assert.deepEqual(warnings, []);
 		assert.ok(css.includes('[anchor="--tip"] { anchor-name: --tip }'));
-		assert.ok(css.includes('[anchortarget="--tip"] { position-anchor: --tip }'));
+		assert.ok(
+			css.includes('[anchortarget="--tip"] { position-anchor: --tip }'),
+		);
 		// position-area and position-try carry no attr(), so they are not duplicated.
 		assert.ok(
 			!css.includes(

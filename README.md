@@ -1,4 +1,4 @@
-# @fylgja/css-attr-polyfill
+# Fylgja - css-attr-polyfill
 
 Compile CSS `attr()` v2 into static fallback rules for browsers that do not support it.
 
@@ -8,22 +8,22 @@ which attribute values your project actually uses, and writes the equivalent sta
 ```css
 /* you write this */
 [data-py] {
-	padding-block: calc(var(--spacing) * attr(data-py type(<number>), 1));
+  padding-block: calc(var(--spacing) * attr(data-py type(<number>), 1));
 }
 ```
 
 ```css
 /* you also get this */
 @supports not (padding: attr(x type(<length>), 1px)) {
-	[data-py] {
-		padding-block: calc(var(--spacing) * 1);
-	}
-	[data-py="2"] {
-		padding-block: calc(var(--spacing) * 2);
-	}
-	[data-py="4"] {
-		padding-block: calc(var(--spacing) * 4);
-	}
+  [data-py] {
+    padding-block: calc(var(--spacing) * 1);
+  }
+  [data-py="2"] {
+    padding-block: calc(var(--spacing) * 2);
+  }
+  [data-py="4"] {
+    padding-block: calc(var(--spacing) * 4);
+  }
 }
 ```
 
@@ -85,8 +85,8 @@ css-attr-polyfill utilities.css -c "src/**/*.{html,jsx,vue}" -o utilities.compil
 import { compile } from "@fylgja/css-attr-polyfill";
 
 const { css, warnings } = await compile(source, {
-	content: ["src/**/*.{html,jsx,vue}"],
-	safelist: { "data-*": "0..12 by 0.5" },
+  content: ["src/**/*.{html,jsx,vue}"],
+  safelist: { "data-*": "0..12 by 0.5" },
 });
 ```
 
@@ -122,7 +122,7 @@ values travel with it.
 ```css
 /* attr-polyfill: data-py 0..12 by 0.5 */
 [data-py] {
-	padding-block: calc(var(--spacing) * attr(data-py type(<number>), 1));
+  padding-block: calc(var(--spacing) * attr(data-py type(<number>), 1));
 }
 ```
 
@@ -193,7 +193,7 @@ stylesheet out. Use the CLI or `compile()` when you want a separate fallback fil
 import attrPolyfill from "@fylgja/css-attr-polyfill/vite";
 
 export default {
-	plugins: [attrPolyfill({ content: ["src/**/*.{html,jsx,vue}"] })],
+  plugins: [attrPolyfill({ content: ["src/**/*.{html,jsx,vue}"] })],
 };
 ```
 
@@ -208,7 +208,7 @@ or with JavaScript imports.
 import attrPolyfill from "@fylgja/css-attr-polyfill/postcss";
 
 export default {
-	plugins: [attrPolyfill({ content: ["src/**/*.html"] })],
+  plugins: [attrPolyfill({ content: ["src/**/*.html"] })],
 };
 ```
 

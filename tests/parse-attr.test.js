@@ -8,7 +8,9 @@ describe("parseAttrRefs", () => {
 	});
 
 	it("reads name, type and fallback from a typed attr()", () => {
-		const [ref] = parseAttrRefs("calc(var(--spacing) * attr(data-py type(<number>), 1))");
+		const [ref] = parseAttrRefs(
+			"calc(var(--spacing) * attr(data-py type(<number>), 1))",
+		);
 		assert.equal(ref.name, "data-py");
 		assert.deepEqual(ref.type, { kind: "syntax", syntax: "<number>" });
 		assert.equal(ref.fallback, "1");
@@ -18,7 +20,10 @@ describe("parseAttrRefs", () => {
 	it("handles a missing fallback", () => {
 		const [ref] = parseAttrRefs("attr(anchor type(<custom-ident>))");
 		assert.equal(ref.fallback, null);
-		assert.deepEqual(ref.type, { kind: "syntax", syntax: "<custom-ident>" });
+		assert.deepEqual(ref.type, {
+			kind: "syntax",
+			syntax: "<custom-ident>",
+		});
 	});
 
 	it("treats a bare attr() as a string", () => {
@@ -27,8 +32,13 @@ describe("parseAttrRefs", () => {
 	});
 
 	it("reads raw-string and attr-unit type forms", () => {
-		assert.deepEqual(parseAttrRefs("attr(data-s raw-string)")[0].type, { kind: "raw-string" });
-		assert.deepEqual(parseAttrRefs("attr(data-w px)")[0].type, { kind: "unit", unit: "px" });
+		assert.deepEqual(parseAttrRefs("attr(data-s raw-string)")[0].type, {
+			kind: "raw-string",
+		});
+		assert.deepEqual(parseAttrRefs("attr(data-w px)")[0].type, {
+			kind: "unit",
+			unit: "px",
+		});
 	});
 
 	it("keeps commas inside a fallback intact", () => {
@@ -37,17 +47,28 @@ describe("parseAttrRefs", () => {
 	});
 
 	it("flags forms it cannot compile", () => {
-		assert.match(parseAttrRefs("attr(ns|foo type(<number>))")[0].unsupported, /namespaced/);
+		assert.match(
+			parseAttrRefs("attr(ns|foo type(<number>))")[0].unsupported,
+			/namespaced/,
+		);
 		assert.match(
 			parseAttrRefs("attr(data-x type(<weird>))")[0].unsupported,
 			/unsupported type/,
 		);
-		assert.match(parseAttrRefs("attr(data-x bananas)")[0].unsupported, /unrecognised/);
-		assert.match(parseAttrRefs("attr()")[0].unsupported, /missing an attribute name/);
+		assert.match(
+			parseAttrRefs("attr(data-x bananas)")[0].unsupported,
+			/unrecognised/,
+		);
+		assert.match(
+			parseAttrRefs("attr()")[0].unsupported,
+			/missing an attribute name/,
+		);
 	});
 
 	it("finds every attr() in a declaration, in order", () => {
-		const refs = parseAttrRefs("attr(data-a type(<number>)) attr(data-b type(<number>))");
+		const refs = parseAttrRefs(
+			"attr(data-a type(<number>)) attr(data-b type(<number>))",
+		);
 		assert.deepEqual(
 			refs.map((r) => r.name),
 			["data-a", "data-b"],
@@ -62,20 +83,31 @@ describe("parseAttrRefs", () => {
 describe("substituteAttr", () => {
 	it("replaces one attr() and leaves the rest of the value alone", () => {
 		assert.equal(
-			substituteAttr("calc(var(--spacing) * attr(data-py type(<number>), 1))", 0, "2"),
+			substituteAttr(
+				"calc(var(--spacing) * attr(data-py type(<number>), 1))",
+				0,
+				"2",
+			),
 			"calc(var(--spacing) * 2)",
 		);
 	});
 
 	it("replaces attr() nested inside another function", () => {
 		assert.equal(
-			substituteAttr("clamp(1px, attr(data-w type(<length>), 2px), 9px)", 0, "5rem"),
+			substituteAttr(
+				"clamp(1px, attr(data-w type(<length>), 2px), 9px)",
+				0,
+				"5rem",
+			),
 			"clamp(1px, 5rem, 9px)",
 		);
 	});
 
 	it("targets the requested occurrence only", () => {
 		const value = "attr(data-a type(<number>)) attr(data-b type(<number>))";
-		assert.equal(substituteAttr(value, 1, "9"), "attr(data-a type(<number>)) 9");
+		assert.equal(
+			substituteAttr(value, 1, "9"),
+			"attr(data-a type(<number>)) 9",
+		);
 	});
 });

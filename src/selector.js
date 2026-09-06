@@ -1,6 +1,11 @@
 import parser from "postcss-selector-parser";
 
-const LEGACY_PSEUDO_ELEMENTS = new Set([":before", ":after", ":first-line", ":first-letter"]);
+const LEGACY_PSEUDO_ELEMENTS = new Set([
+	":before",
+	":after",
+	":first-line",
+	":first-letter",
+]);
 
 /** Pseudo-classes that match the same element as their host compound. */
 const TRANSPARENT_PSEUDOS = new Set([":where", ":is"]);
@@ -11,7 +16,10 @@ const TRANSPARENT_PSEUDOS = new Set([":where", ":is"]);
  */
 function isPseudoElement(node) {
 	if (node.type !== "pseudo") return false;
-	return node.value.startsWith("::") || LEGACY_PSEUDO_ELEMENTS.has(node.value.toLowerCase());
+	return (
+		node.value.startsWith("::") ||
+		LEGACY_PSEUDO_ELEMENTS.has(node.value.toLowerCase())
+	);
 }
 
 /**
@@ -58,7 +66,9 @@ function subjectStart(selector) {
  */
 function findRewritable(subject, attribute) {
 	const isBare = (node) =>
-		node.type === "attribute" && node.attribute === attribute && !node.operator;
+		node.type === "attribute" &&
+		node.attribute === attribute &&
+		!node.operator;
 
 	const direct = subject.filter(isBare);
 	if (direct.length === 1) return direct[0];

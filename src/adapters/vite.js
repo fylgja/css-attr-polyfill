@@ -18,7 +18,12 @@ const CSS_FILE = /\.css(?:$|\?)/;
  * @returns {import("vite").Plugin}
  */
 export function attrPolyfill(options = {}) {
-	const { include = CSS_FILE, mode, content = [], ...compileOptions } = options;
+	const {
+		include = CSS_FILE,
+		mode,
+		content = [],
+		...compileOptions
+	} = options;
 	let cwd = process.cwd();
 
 	// Scanning the same content for every stylesheet in a build would be wasteful.
@@ -53,7 +58,11 @@ export function attrPolyfill(options = {}) {
 					scanned: found.values,
 				});
 			} else {
-				result = await compile(code, { ...compileOptions, cwd, mode: "combined" });
+				result = await compile(code, {
+					...compileOptions,
+					cwd,
+					mode: "combined",
+				});
 			}
 
 			for (const warning of result.warnings) this.warn(warning);

@@ -1,121 +1,121 @@
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<link rel="stylesheet" href="/src/main.css" />
-		<title>CSS attr() v2, compiled</title>
-	</head>
-	<body>
-		<main>
-			<header>
-				<h1>CSS <code>attr()</code> v2, compiled</h1>
-				<p>
-					One stylesheet, written once with <code>attr()</code> v2. The build adds static
-					fallbacks behind an <code>@supports</code> guard, so this page works either way.
-				</p>
-				<p>This browser is using: <span class="badge support"></span></p>
-				<p class="hint">
-					Open the same page in another browser to see the other path. Both should look
-					identical.
-				</p>
-			</header>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="/src/main.css" />
+        <title>CSS attr() v2, compiled</title>
+    </head>
+    <body>
+        <main>
+            <header>
+                <h1>CSS <code>attr()</code> v2, compiled</h1>
+                <p>
+                    One stylesheet, written once with <code>attr()</code> v2. The build adds static
+                    fallbacks behind an <code>@supports</code> guard, so this page works either way.
+                </p>
+                <p>This browser is using: <span class="badge support"></span></p>
+                <p class="hint">
+                    Open the same page in another browser to see the other path. Both should look
+                    identical.
+                </p>
+            </header>
 
-			<section>
-				<h2>Utilities on real components</h2>
-				<p class="hint">
-					These are <code>@fylgja/card</code> and <code>@fylgja/badge</code>. The
-					attributes override the component defaults through ordinary cascade order.
-				</p>
-				<div class="stack" data-gap="4">
-					<article class="card" data-p="6" data-radius="10px">
-						<h3>Deploy previews</h3>
-						<p>
-							Every attribute here drives a real declaration through
-							<code>attr()</code>.
-						</p>
-						<span class="badge" data-label="new"></span>
-					</article>
-					<article class="card" data-p="10" data-radius="4px" data-tint="#f5c54233">
-						<h3>Wider padding, softer corner</h3>
-						<p>Same component, different attribute values. No extra CSS was written.</p>
-					</article>
-				</div>
-			</section>
+            <section>
+                <h2>Utilities on real components</h2>
+                <p class="hint">
+                    These are <code>@fylgja/card</code> and <code>@fylgja/badge</code>. The
+                    attributes override the component defaults through ordinary cascade order.
+                </p>
+                <div class="stack" data-gap="4">
+                    <article class="card" data-p="6" data-radius="10px">
+                        <h3>Deploy previews</h3>
+                        <p>
+                            Every attribute here drives a real declaration through
+                            <code>attr()</code>.
+                        </p>
+                        <span class="badge" data-label="new"></span>
+                    </article>
+                    <article class="card" data-p="10" data-radius="4px" data-tint="#f5c54233">
+                        <h3>Wider padding, softer corner</h3>
+                        <p>Same component, different attribute values. No extra CSS was written.</p>
+                    </article>
+                </div>
+            </section>
 
-			<section>
-				<h2>Spacing scale, <code>type(&lt;number&gt;)</code></h2>
-				<p class="hint">
-					Padding is <code>calc(var(--spacing) * attr(data-p ...))</code>, overriding the
-					badge's own padding. Only the values used on this page are generated.
-				</p>
-				<div class="row">
-					<span class="badge" data-p="2">2</span>
-					<span class="badge" data-p="4">4</span>
-					<span class="badge" data-p="6">6</span>
-					<span class="badge" data-p="8">8</span>
-					<span class="badge" data-p="12">12</span>
-				</div>
-			</section>
+            <section>
+                <h2>Spacing scale, <code>type(&lt;number&gt;)</code></h2>
+                <p class="hint">
+                    Padding is <code>calc(var(--spacing) * attr(data-p ...))</code>, overriding the
+                    badge's own padding. Only the values used on this page are generated.
+                </p>
+                <div class="row">
+                    <span class="badge" data-p="2">2</span>
+                    <span class="badge" data-p="4">4</span>
+                    <span class="badge" data-p="6">6</span>
+                    <span class="badge" data-p="8">8</span>
+                    <span class="badge" data-p="12">12</span>
+                </div>
+            </section>
 
-			<section>
-				<h2>One attribute driving two properties</h2>
-				<div class="row baseline">
-					<span class="box" data-size="8"></span>
-					<span class="box" data-size="12"></span>
-					<span class="box" data-size="16"></span>
-					<span class="box" data-size="24"></span>
-				</div>
-			</section>
+            <section>
+                <h2>One attribute driving two properties</h2>
+                <div class="row baseline">
+                    <span class="box" data-size="8"></span>
+                    <span class="box" data-size="12"></span>
+                    <span class="box" data-size="16"></span>
+                    <span class="box" data-size="24"></span>
+                </div>
+            </section>
 
-			<section>
-				<h2>Lengths, from an in-CSS annotation</h2>
-				<p class="hint">
-					These values are not in the markup. The range lives in an
-					<code>attr-polyfill:</code> comment in <code>utilities.css</code>.
-				</p>
-				<div class="row baseline">
-					<span class="box" data-size="12" data-radius="0px"></span>
-					<span class="box" data-size="12" data-radius="4px"></span>
-					<span class="box" data-size="12" data-radius="10px"></span>
-					<span class="box" data-size="12" data-radius="999px"></span>
-				</div>
-			</section>
+            <section>
+                <h2>Lengths, from an in-CSS annotation</h2>
+                <p class="hint">
+                    These values are not in the markup. The range lives in an
+                    <code>attr-polyfill:</code> comment in <code>utilities.css</code>.
+                </p>
+                <div class="row baseline">
+                    <span class="box" data-size="12" data-radius="0px"></span>
+                    <span class="box" data-size="12" data-radius="4px"></span>
+                    <span class="box" data-size="12" data-radius="10px"></span>
+                    <span class="box" data-size="12" data-radius="999px"></span>
+                </div>
+            </section>
 
-			<section>
-				<h2>Colours, <code>type(&lt;color&gt;)</code></h2>
-				<div class="row">
-					<span class="box" data-size="12" data-tint="#f5c542"></span>
-					<span class="box" data-size="12" data-tint="#8ec07c"></span>
-					<span class="box" data-size="12" data-tint="#d98a8a"></span>
-					<span class="box" data-size="12" data-tint="rebeccapurple"></span>
-				</div>
-			</section>
+            <section>
+                <h2>Colours, <code>type(&lt;color&gt;)</code></h2>
+                <div class="row">
+                    <span class="box" data-size="12" data-tint="#f5c542"></span>
+                    <span class="box" data-size="12" data-tint="#8ec07c"></span>
+                    <span class="box" data-size="12" data-tint="#d98a8a"></span>
+                    <span class="box" data-size="12" data-tint="rebeccapurple"></span>
+                </div>
+            </section>
 
-			<section>
-				<h2>Strings on a pseudo-element</h2>
-				<p class="hint">
-					Badge text comes from the attribute. Generates
-					<code>:where([data-label="..."])::after</code>, inserted before the
-					pseudo-element.
-				</p>
-				<div class="row">
-					<span class="badge" data-label="new"></span>
-					<span class="badge" data-label="beta"></span>
-					<span class="badge" data-label="deprecated"></span>
-				</div>
-			</section>
+            <section>
+                <h2>Strings on a pseudo-element</h2>
+                <p class="hint">
+                    Badge text comes from the attribute. Generates
+                    <code>:where([data-label="..."])::after</code>, inserted before the
+                    pseudo-element.
+                </p>
+                <div class="row">
+                    <span class="badge" data-label="new"></span>
+                    <span class="badge" data-label="beta"></span>
+                    <span class="badge" data-label="deprecated"></span>
+                </div>
+            </section>
 
-			<section>
-				<h2>Inside a media query</h2>
-				<p class="hint">
-					Padding grows at 40rem. The fallback is generated inside the same
-					<code>@media</code>, not hoisted out. Resize the window.
-				</p>
-				<div class="row">
-					<span class="badge" data-md-p="12">resize me</span>
-				</div>
-			</section>
-		</main>
-	</body>
+            <section>
+                <h2>Inside a media query</h2>
+                <p class="hint">
+                    Padding grows at 40rem. The fallback is generated inside the same
+                    <code>@media</code>, not hoisted out. Resize the window.
+                </p>
+                <div class="row">
+                    <span class="badge" data-md-p="12">resize me</span>
+                </div>
+            </section>
+        </main>
+    </body>
 </html>

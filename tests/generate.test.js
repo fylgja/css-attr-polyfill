@@ -20,10 +20,21 @@ describe("generateFallbacks", () => {
 	});
 
 	it("emits a base rule carrying attr()'s own fallback, before the value rules", () => {
-		const { rules } = generateFallbacks(spacing, resolver({ "data-py": ["2"] }));
+		const { rules } = generateFallbacks(
+			spacing,
+			resolver({ "data-py": ["2"] }),
+		);
 		assert.deepEqual(rules, [
-			{ prop: "padding-block", selector: "[data-py]", value: "calc(var(--spacing) * 1)" },
-			{ prop: "padding-block", selector: '[data-py="2"]', value: "calc(var(--spacing) * 2)" },
+			{
+				prop: "padding-block",
+				selector: "[data-py]",
+				value: "calc(var(--spacing) * 1)",
+			},
+			{
+				prop: "padding-block",
+				selector: '[data-py="2"]',
+				value: "calc(var(--spacing) * 2)",
+			},
 		]);
 	});
 
@@ -37,7 +48,11 @@ describe("generateFallbacks", () => {
 			resolver({ anchor: ["--tip"] }),
 		);
 		assert.deepEqual(rules, [
-			{ prop: "anchor-name", selector: '[anchor="--tip"]', value: "--tip" },
+			{
+				prop: "anchor-name",
+				selector: '[anchor="--tip"]',
+				value: "--tip",
+			},
 		]);
 	});
 
@@ -56,7 +71,10 @@ describe("generateFallbacks", () => {
 	});
 
 	it("deduplicates repeated values", () => {
-		const { rules } = generateFallbacks(spacing, resolver({ "data-py": ["2", "2", "2"] }));
+		const { rules } = generateFallbacks(
+			spacing,
+			resolver({ "data-py": ["2", "2", "2"] }),
+		);
 		assert.equal(rules.length, 2);
 	});
 
@@ -70,12 +88,19 @@ describe("generateFallbacks", () => {
 			resolver({ "data-a": ["1"], "data-b": ["2"] }),
 		);
 		assert.deepEqual(rules, []);
-		assert.match(warnings[0], /multiple attr\(\) references \(data-a, data-b\)/);
+		assert.match(
+			warnings[0],
+			/multiple attr\(\) references \(data-a, data-b\)/,
+		);
 	});
 
 	it("passes through unsupported attr() forms untouched, with a warning", () => {
 		const { rules, warnings } = generateFallbacks(
-			{ prop: "width", selector: "[data-x]", value: "attr(data-x type(<weird>))" },
+			{
+				prop: "width",
+				selector: "[data-x]",
+				value: "attr(data-x type(<weird>))",
+			},
 			resolver({ "data-x": ["1"] }),
 		);
 		assert.deepEqual(rules, []);
@@ -84,9 +109,13 @@ describe("generateFallbacks", () => {
 
 	it("caps generated rules and reports what it dropped", () => {
 		const values = Array.from({ length: 10 }, (_, i) => String(i));
-		const { rules, warnings } = generateFallbacks(spacing, resolver({ "data-py": values }), {
-			maxValues: 4,
-		});
+		const { rules, warnings } = generateFallbacks(
+			spacing,
+			resolver({ "data-py": values }),
+			{
+				maxValues: 4,
+			},
+		);
 		assert.equal(rules.length, 5); // one base rule plus the cap
 		assert.match(warnings[0], /6 value\(s\).*dropped/);
 	});

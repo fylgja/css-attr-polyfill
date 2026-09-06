@@ -54,7 +54,11 @@ export function generateFallbacks(declaration, resolveValues, options = {}) {
 	const rules = [];
 
 	if (ref.fallback !== null) {
-		rules.push({ selector, prop, value: substituteAttr(value, 0, ref.fallback) });
+		rules.push({
+			selector,
+			prop,
+			value: substituteAttr(value, 0, ref.fallback),
+		});
 	}
 
 	const candidates = [...new Set(resolveValues(ref.name) ?? [])];

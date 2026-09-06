@@ -12,7 +12,8 @@ import {
  * Feature test for attr() v2. Browsers without support fail to parse the value, so the
  * declaration is invalid, the condition is false, and `not` lets the fallback through.
  */
-export const DEFAULT_SUPPORTS_CONDITION = "not (padding: attr(x type(<length>), 1px))";
+export const DEFAULT_SUPPORTS_CONDITION =
+	"not (padding: attr(x type(<length>), 1px))";
 
 /**
  * @typedef {{ selector: string, declarations: Array<{ prop: string, value: string }> }} FallbackRule
@@ -23,7 +24,9 @@ export const DEFAULT_SUPPORTS_CONDITION = "not (padding: attr(x type(<length>), 
  * @returns {string}
  */
 function formatRule({ selector, declarations }) {
-	const body = declarations.map(({ prop, value }) => `${prop}: ${value}`).join("; ");
+	const body = declarations
+		.map(({ prop, value }) => `${prop}: ${value}`)
+		.join("; ");
 	return `${selector} { ${body} }`;
 }
 
@@ -38,7 +41,9 @@ function formatRule({ selector, declarations }) {
  * @returns {string}
  */
 function formatGuard(condition, rules, indent, unit) {
-	const body = rules.map((rule) => `${indent}${unit}${formatRule(rule)}`).join("\n");
+	const body = rules
+		.map((rule) => `${indent}${unit}${formatRule(rule)}`)
+		.join("\n");
 	return `@supports ${condition} {\n${body}\n${indent}}`;
 }
 
@@ -56,7 +61,8 @@ function buildRulesFor(rule, resolve, options) {
 	const warnings = [];
 
 	for (const node of rule.nodes) {
-		if (node.type !== "declaration" || !node.value.includes("attr(")) continue;
+		if (node.type !== "declaration" || !node.value.includes("attr("))
+			continue;
 
 		const result = generateFallbacks(
 			{ prop: node.prop, selector: rule.selector, value: node.value },
@@ -64,7 +70,11 @@ function buildRulesFor(rule, resolve, options) {
 			options,
 		);
 
-		warnings.push(...result.warnings.map((message) => `${rule.selector} { ${message} }`));
+		warnings.push(
+			...result.warnings.map(
+				(message) => `${rule.selector} { ${message} }`,
+			),
+		);
 
 		for (const generated of result.rules) {
 			const declarations = bySelector.get(generated.selector) ?? [];
@@ -73,7 +83,10 @@ function buildRulesFor(rule, resolve, options) {
 		}
 	}
 
-	const rules = [...bySelector].map(([selector, declarations]) => ({ declarations, selector }));
+	const rules = [...bySelector].map(([selector, declarations]) => ({
+		declarations,
+		selector,
+	}));
 	return { rules, warnings };
 }
 
@@ -119,7 +132,8 @@ function renderGroup(node, condition, depth, unit) {
 	const indent = unit.repeat(depth);
 	let out = "";
 
-	if (node.rules.length) out += `${indent}${formatGuard(condition, node.rules, indent, unit)}\n`;
+	if (node.rules.length)
+		out += `${indent}${formatGuard(condition, node.rules, indent, unit)}\n`;
 
 	for (const child of node.children.values()) {
 		out += `${indent}@${child.name} ${child.params} {\n`;
@@ -186,7 +200,8 @@ export function transform(css, options = {}) {
 	walkRules(nodes, (rule, ancestry) => {
 		const built = buildRulesFor(rule, resolve, { maxValues });
 		warnings.push(...built.warnings);
-		if (built.rules.length) pending.push({ ancestry, rule, rules: built.rules });
+		if (built.rules.length)
+			pending.push({ ancestry, rule, rules: built.rules });
 	});
 
 	if (mode === "split") {

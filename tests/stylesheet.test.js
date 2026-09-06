@@ -31,26 +31,42 @@ function rulesOf(css) {
 describe("parseStylesheet", () => {
 	it("reads selectors and declarations", () => {
 		assert.deepEqual(rulesOf(".a { color: red; background: blue }"), [
-			{ ancestry: [], declarations: ["color: red", "background: blue"], selector: ".a" },
+			{
+				ancestry: [],
+				declarations: ["color: red", "background: blue"],
+				selector: ".a",
+			},
 		]);
 	});
 
 	it("tolerates a missing final semicolon", () => {
-		assert.deepEqual(rulesOf(".a { color: red }")[0].declarations, ["color: red"]);
+		assert.deepEqual(rulesOf(".a { color: red }")[0].declarations, [
+			"color: red",
+		]);
 	});
 
 	it("tracks at-rule ancestry", () => {
-		const [rule] = rulesOf("@layer u { @media (width >= 768px) { .a { color: red } } }");
-		assert.deepEqual(rule.ancestry, ["@layer u", "@media (width >= 768px)"]);
+		const [rule] = rulesOf(
+			"@layer u { @media (width >= 768px) { .a { color: red } } }",
+		);
+		assert.deepEqual(rule.ancestry, [
+			"@layer u",
+			"@media (width >= 768px)",
+		]);
 	});
 
 	it("ignores braces and semicolons inside strings", () => {
 		const [rule] = rulesOf('.a { content: "x{y;z}"; color: red }');
-		assert.deepEqual(rule.declarations, ['content: "x{y;z}"', "color: red"]);
+		assert.deepEqual(rule.declarations, [
+			'content: "x{y;z}"',
+			"color: red",
+		]);
 	});
 
 	it("ignores colons and semicolons inside parentheses", () => {
-		const [rule] = rulesOf(".a { background: url(http://x/y.png); width: calc(1px + 2px) }");
+		const [rule] = rulesOf(
+			".a { background: url(http://x/y.png); width: calc(1px + 2px) }",
+		);
 		assert.deepEqual(rule.declarations, [
 			"background: url(http://x/y.png)",
 			"width: calc(1px + 2px)",
@@ -58,7 +74,9 @@ describe("parseStylesheet", () => {
 	});
 
 	it("keeps attr() values intact", () => {
-		const [rule] = rulesOf("[a] { width: calc(var(--s) * attr(data-x type(<number>), 1)) }");
+		const [rule] = rulesOf(
+			"[a] { width: calc(var(--s) * attr(data-x type(<number>), 1)) }",
+		);
 		assert.deepEqual(rule.declarations, [
 			"width: calc(var(--s) * attr(data-x type(<number>), 1))",
 		]);
@@ -86,7 +104,9 @@ describe("parseStylesheet", () => {
 	});
 
 	it("keeps custom properties as declarations", () => {
-		assert.deepEqual(rulesOf(":root { --x: 1px }")[0].declarations, ["--x: 1px"]);
+		assert.deepEqual(rulesOf(":root { --x: 1px }")[0].declarations, [
+			"--x: 1px",
+		]);
 	});
 });
 
@@ -122,7 +142,10 @@ describe("indentAt and detectIndentUnit", () => {
 describe("core dependency boundary", () => {
 	it("keeps postcss out of everything except the postcss adapter", async () => {
 		const dir = fileURLToPath(new URL("../src", import.meta.url));
-		const files = await readdir(dir, { recursive: true, withFileTypes: true });
+		const files = await readdir(dir, {
+			recursive: true,
+			withFileTypes: true,
+		});
 		const offenders = [];
 
 		for (const file of files) {

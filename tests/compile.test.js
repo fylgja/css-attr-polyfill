@@ -40,7 +40,10 @@ describe("compile", () => {
 			"index.html": `<div data-py="2">`,
 			"page.php": `<div data-py="<?= $n ?>" data-px="9">`,
 		});
-		const { css } = await compile(SPACING, { content: ["*.{html,jsx,php}"], cwd });
+		const { css } = await compile(SPACING, {
+			content: ["*.{html,jsx,php}"],
+			cwd,
+		});
 
 		assert.ok(css.includes('[data-py="2"]'));
 		assert.ok(css.includes('[data-py="3"]'));
@@ -48,8 +51,13 @@ describe("compile", () => {
 	});
 
 	it("warns about runtime-bound attributes that nothing else covers", async () => {
-		const cwd = await fixtureDir({ "App.vue": `<div :data-py="n" data-px="1">` });
-		const { warnings } = await compile(SPACING, { content: ["*.vue"], cwd });
+		const cwd = await fixtureDir({
+			"App.vue": `<div :data-py="n" data-px="1">`,
+		});
+		const { warnings } = await compile(SPACING, {
+			content: ["*.vue"],
+			cwd,
+		});
 
 		assert.equal(warnings.length, 1);
 		assert.match(warnings[0], /"data-py" is bound at runtime/);
@@ -81,7 +89,9 @@ describe("compile", () => {
 	});
 
 	it("skips scanning entirely when no content is configured", async () => {
-		const { css, files } = await compile(SPACING, { safelist: { "data-py": "2" } });
+		const { css, files } = await compile(SPACING, {
+			safelist: { "data-py": "2" },
+		});
 		assert.equal(files, 0);
 		assert.ok(css.includes('[data-py="2"]'));
 	});
