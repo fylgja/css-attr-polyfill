@@ -39,8 +39,6 @@
     "node": ">=22.0.0"
   },
   "scripts": {
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
     "test": "node --test tests/*.test.js"
   },
   "dependencies": {
