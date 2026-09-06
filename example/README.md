@@ -1,7 +1,7 @@
 # Example
 
-A Vite setup showing `attr()` v2 compiled to static fallbacks, with a side by side
-comparison so you can see the generated CSS doing real work.
+A Vite setup showing how you would actually ship `attr()` v2 today: one stylesheet, written
+once, with static fallbacks generated at build time behind an `@supports` guard.
 
 ## Run it
 
@@ -10,34 +10,45 @@ npm install
 npm run dev
 ```
 
-## The two pages
+Then open the page in more than one browser. The badge at the top tells you which path that
+browser took, using a pure CSS `@supports` test with no JavaScript:
 
-| Page           | Loads                                       | Shows                                                                          |
-| -------------- | ------------------------------------------- | ------------------------------------------------------------------------------ |
-| `/index.html`  | `src/utilities.css` through the Vite plugin | What your browser actually does. In Chrome that is native `attr()` v2.         |
-| `/static.html` | only the compiled output                    | What a browser without `attr()` v2 gets, forced on so you can see it anywhere. |
+- **native attr() v2**, in browsers that support it
+- **generated fallback**, in browsers that do not
 
-Both pages render the same markup from `src/demo.js`. **If they look identical, the
-compiler did its job.** The badge at the top of each page tells you which path you are
-looking at, using a pure CSS `@supports` test with no JavaScript.
+The page should look the same either way. That is the whole point.
 
-`static.html` is built by the CLI in split mode, with the guard condition overridden to
-something always true so the fallback applies even in a modern browser:
+## What ships
 
-```bash
-css-attr-polyfill src/utilities.css --split \
-  --fallback-out src/generated/static-only.css \
-  --supports "(padding: 1px)" -c "*.html" -c "src/**/*.js"
+`src/utilities.css` is the only stylesheet you write. The Vite plugin compiles it in place,
+so the built CSS contains both paths:
+
+```css
+@supports not (padding: attr(x type(<length>), 1px)) {
+	[data-p="3"] {
+		padding: calc(var(--spacing) * 3);
+	}
+}
+[data-p] {
+	padding: calc(var(--spacing) * attr(data-p type(<number>), 1));
+}
 ```
+
+The guard is false in modern browsers, so they skip the generated block and use `attr()`
+directly, keeping its unbounded behaviour. Older browsers cannot parse the `attr()`
+declaration at all, so they drop it and use the generated rule. Load order never matters.
+
+Only the values actually present in `index.html` get generated, because the plugin is
+configured with `content: ["*.html"]`.
 
 ## What each section demonstrates
 
+- **Component**: real markup built from the utilities, several attributes on one element.
 - **Spacing** and **sizing**: `type(<number>)` inside `calc()`, one attribute driving two
-  properties, values discovered by scanning the markup.
-- **Lengths**: values come from an `attr-polyfill:` comment in the CSS, not from scanning.
+  properties.
+- **Lengths**: values come from an `attr-polyfill:` comment in the CSS rather than scanning,
+  which is how you cover values that never appear literally in markup.
 - **Colours**: `type(<color>)`, including named colours.
-- **Strings**: legacy `attr()` on a pseudo-element. This already works everywhere, so it is
-  here to show the selector handling, which inserts the match _before_ `::after`.
 - **Media query**: the fallback is generated inside the same `@media`, not hoisted out.
 
 ## Inspect the output
@@ -46,12 +57,14 @@ css-attr-polyfill src/utilities.css --split \
 npm run inspect
 ```
 
-Prints the compiled stylesheet to stdout so you can read the generated rules. Note that
-`:root` tokens live in `src/tokens.css`, separate from the utilities, because the fallback
-stylesheet contains only generated rules and not the custom properties they reference.
+Prints the compiled stylesheet so you can read the generated rules.
 
-## Known limitation
+## Notes
+
+`:root` tokens live in `src/tokens.css`, separate from the utilities. The generated rules
+reference custom properties but do not define them, so keep tokens in a file you always
+load.
 
 The Vite plugin scans content once when it transforms a stylesheet. Changing an attribute
-value in `src/demo.js` or a page will not regenerate the CSS until the stylesheet itself
-changes or the dev server restarts. Editing `src/utilities.css` picks everything up.
+value in `index.html` will not regenerate the CSS until the stylesheet itself changes or
+the dev server restarts. Editing `src/utilities.css` picks everything up.

@@ -117,24 +117,26 @@ code {
 	}
 }
 
-.nav {
+.stack {
 	display: flex;
-	gap: 1rem;
-	align-items: center;
-	margin-block: 1rem 0;
-	font-size: 0.9rem;
+	flex-direction: column;
+	align-items: flex-start;
 }
 
-.nav a {
-	color: #1d4ed8;
+.card {
+	background: var(--surface);
+	border: 1px solid #d7deea;
+	inline-size: 100%;
+	max-inline-size: 30rem;
 }
 
-/* The forced page always renders the generated CSS, whatever the browser supports. */
-.badge.forced {
-	background: #fde8c8;
-	color: #7a4b00;
+.card h3 {
+	margin: 0;
+	font-size: 0.95rem;
 }
 
-.badge.forced::after {
-	content: "generated static CSS, forced on";
+.card p {
+	margin: 0 0 0.5rem;
+	font-size: 0.875rem;
+	color: #5a6b7f;
 }

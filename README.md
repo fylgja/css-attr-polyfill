@@ -167,9 +167,9 @@ the added match is wrapped in `:where()` so specificity does not change.
 
 ## Try it
 
-`example/` is a Vite setup with two pages sharing identical markup: one loading the real
-stylesheet, one loading only the compiled fallback with its guard forced on. If they look
-the same, the compiler did its job.
+`example/` is a Vite setup showing how you would ship this in practice: one stylesheet, one
+page, both paths in the built CSS. Open it in different browsers and a badge tells you which
+path that browser took. It should look the same either way.
 
 ```bash
 cd example && npm install && npm run dev

@@ -15,6 +15,10 @@
 	padding-block: calc(var(--spacing) * attr(data-py type(<number>), 1));
 }
 
+[data-gap] {
+	gap: calc(var(--spacing) * attr(data-gap type(<number>), 1));
+}
+
 [data-size] {
 	block-size: calc(var(--spacing) * attr(data-size type(<number>), 1));
 	inline-size: calc(var(--spacing) * attr(data-size type(<number>), 1));
