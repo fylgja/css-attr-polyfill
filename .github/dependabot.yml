@@ -1,0 +1,37 @@
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    allow:
+      - dependency-type: "direct"
+    cooldown:
+      default-days: 7
+    groups:
+      dev-deps:
+        dependency-type: "development"
+        update-types:
+          - "minor"
+          - "patch"
+
+  # The example pins the compiler with file:.., which Dependabot leaves alone.
+  - package-ecosystem: "npm"
+    directory: "/example"
+    schedule:
+      interval: "monthly"
+    allow:
+      - dependency-type: "direct"
+    cooldown:
+      default-days: 7
+    groups:
+      fylgja-deps:
+        patterns:
+          - "@fylgja/*"
+      dev-deps:
+        dependency-type: "development"
+        exclude-patterns:
+          - "@fylgja/*"
+        update-types:
+          - "minor"
+          - "patch"
