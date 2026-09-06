@@ -1,4 +1,7 @@
-# Fylgja - css-attr-polyfill
+# Fylgja - CSS attr polyfill
+
+[![NPM version](https://img.shields.io/npm/v/@fylgja/css-attr-polyfill?logo=npm)](https://www.npmjs.com/package/@fylgja/css-attr-polyfill)
+[![License](https://img.shields.io/github/license/fylgja/css-attr-polyfill?color=%23234)](/LICENSE)
 
 Compile CSS `attr()` v2 into static fallback rules for browsers that do not support it.
 
@@ -27,17 +30,7 @@ which attribute values your project actually uses, and writes the equivalent sta
 }
 ```
 
-## Why it works
-
-Browsers without `attr()` v2 cannot parse `attr(data-py type(<number>), 1)`, so the whole
-declaration is invalid and gets dropped, including the surrounding `calc()`. The generated
-rules are wrapped in `@supports not (...)`, whose condition is false in modern browsers and
-true everywhere else. Load order never matters, and the two sets of rules can never fight.
-
-Modern browsers keep the original `attr()` declaration untouched, so values outside the
-generated set still work there.
-
-## Install
+## Installation
 
 ```bash
 npm install @fylgja/css-attr-polyfill
@@ -58,6 +51,20 @@ neither is PostCSS, and `postcss-value-parser` has no dependencies of its own.
 CSS documents are read by a parser built into this package, so nothing pulls in a CSS
 framework. `postcss`, `lightningcss` and `vite` are optional peers, needed only by the
 integration you actually use.
+
+## Why it works
+
+The generated rules are wrapped in `@supports not (...)`, whose condition is false in
+browsers that support `attr()` v2 and true everywhere else. Only one of the two paths is
+ever live, so they cannot fight.
+
+Within the fallback path, the generated rules are emitted **after** the `attr()` rule they
+stand in for. Browsers vary in how they treat an unsupported `attr()`: some drop the
+declaration outright, but Safari keeps it. A fallback placed earlier would lose to the very
+rule it replaces.
+
+Modern browsers keep the original `attr()` declaration untouched, so values outside the
+generated set still work there.
 
 ## Usage
 
@@ -230,7 +237,3 @@ const { code } = await preprocess(source, { content: ["src/**/*.html"] });
 
 transform({ code: Buffer.from(code), filename: "utils.css", minify: true });
 ```
-
-## License
-
-MIT
