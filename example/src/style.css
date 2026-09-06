@@ -1,7 +1,9 @@
 /*
- * Only what the demo itself needs. Typography, links, focus rings, form and button
- * styling all come from @fylgja/base, which is class-less, so there is nothing to
- * write for those. Tokens such as --spacing and --radius-2 come from @fylgja/tokens.
+ * Only what the demo itself needs.
+ *
+ * Typography, links, focus rings, forms and buttons come from @fylgja/base, which is
+ * class-less. Cards and badges are @fylgja/card and @fylgja/badge. Tokens such as
+ * --spacing and --radius-2 come from @fylgja/tokens.
  *
  * Nothing in this file uses attr(), so the utilities under test stay clearly separate.
  */
@@ -18,11 +20,11 @@ main {
 section {
 	padding-block: var(--size-6);
 	border-block-start: var(--border-size-1) solid
-		color-mix(in srgb, var(--root-fg) 15%, var(--root-bg));
+		color-mix(in oklab, var(--root-bg) 88%, var(--root-fg));
 }
 
 .hint {
-	color: color-mix(in srgb, var(--root-fg) 65%, var(--root-bg));
+	color: color-mix(in oklab, var(--root-fg) 65%, var(--root-bg));
 	font-size: var(--font-size-1);
 }
 
@@ -44,61 +46,37 @@ section {
 }
 
 .card {
-	background: var(--surface-color);
-	border: var(--border-size-1) solid color-mix(in srgb, var(--root-fg) 15%, var(--root-bg));
 	inline-size: 100%;
 	max-inline-size: var(--size-heading);
-}
-
-.card > :where(h3, p) {
-	margin: 0;
-}
-
-.chip {
-	background: var(--surface-color);
-	border: var(--border-size-1) solid color-mix(in srgb, var(--root-fg) 15%, var(--root-bg));
-	border-radius: var(--radius-2);
-	font-size: var(--font-size-1);
-	font-variant-numeric: tabular-nums;
 }
 
 .box {
 	display: inline-block;
 	min-inline-size: var(--size-4);
 	min-block-size: var(--size-4);
-	background: color-mix(in srgb, var(--root-fg) 15%, var(--root-bg));
+	background: color-mix(in oklab, var(--root-fg) 15%, var(--root-bg));
 }
 
-.labelled::after {
-	margin-inline-start: 0.4em;
-	font-weight: 700;
-	font-size: 0.7em;
-	text-transform: uppercase;
-	letter-spacing: 0.04em;
+/*
+ * Pure CSS feature detection, themed through the badge component's own custom
+ * properties rather than by overriding its rules.
+ */
+.support {
+	--badge-bg: oklch(85% 0.14 85);
+	--badge-color: oklch(30% 0.1 85);
 }
 
-/* Pure CSS feature detection. The badge reports which path this browser took. */
-.badge {
-	display: inline-block;
-	padding: var(--size-1) var(--size-3);
-	border-radius: var(--radius-full);
-	font-size: var(--font-size-1);
-	font-weight: 600;
-	background: oklch(90% 0.12 96);
-	color: oklch(35% 0.15 70);
-}
-
-.badge::after {
+.support::after {
 	content: "generated fallback";
 }
 
 @supports (padding: attr(x type(<length>), 1px)) {
-	.badge {
-		background: oklch(90% 0.12 140);
-		color: oklch(35% 0.15 140);
+	.support {
+		--badge-bg: oklch(85% 0.14 150);
+		--badge-color: oklch(30% 0.1 150);
 	}
 
-	.badge::after {
+	.support::after {
 		content: "native attr() v2";
 	}
 }

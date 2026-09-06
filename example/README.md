@@ -3,9 +3,14 @@
 A Vite setup showing how you would actually ship `attr()` v2 today: one stylesheet, written
 once, with static fallbacks generated at build time behind an `@supports` guard.
 
-Styling comes from `@fylgja/base` and `@fylgja/tokens`, so the page is a realistic Fylgja
-project rather than a pile of demo CSS. The compiler itself does not depend on either;
-they are here because this is the setup the tool was built for.
+Styling comes from `@fylgja/base`, `@fylgja/tokens`, `@fylgja/card` and `@fylgja/badge`, so
+the page is a realistic Fylgja project rather than a pile of demo CSS. The compiler itself
+does not depend on any of them; they are here because this is the setup the tool was built
+for.
+
+The utilities land on real components. A `.card` carrying `data-p` and `data-radius`
+overrides the component's own padding and corner through ordinary cascade order, which is
+why `utilities.css` has to be imported last.
 
 ## Run it
 
@@ -60,12 +65,16 @@ configured with `content: ["*.html"]`.
 
 ## What each section demonstrates
 
-- **Component**: real markup built from the utilities, several attributes on one element.
+- **Components**: `@fylgja/card` and `@fylgja/badge` with utilities layered over their
+  defaults.
 - **Spacing** and **sizing**: `type(<number>)` inside `calc()`, one attribute driving two
   properties.
 - **Lengths**: values come from an `attr-polyfill:` comment in the CSS rather than scanning,
   which is how you cover values that never appear literally in markup.
 - **Colours**: `type(<color>)`, including named colours.
+- **Strings**: badge text comes from `data-label` through legacy `attr()` on a pseudo-element.
+  That already works everywhere, so it is here to show the selector handling, which inserts
+  the match _before_ `::after`.
 - **Media query**: the fallback is generated inside the same `@media`, not hoisted out.
 
 ## Inspect the output
@@ -86,6 +95,10 @@ uses the utilities. `src/style.css` holds only what the demo itself needs, since
 Attribute values have to be literal. `attr(data-tint type(<color>))` needs `data-tint="#f5c542"`,
 not `data-tint="var(--color-3)"`, because `var()` is not a `<color>` at parse time. The same
 applies to lengths.
+
+The card tint uses an alpha hex so it layers over whatever the card background already is.
+`@fylgja/base/theme` enables `color-scheme: light dark`, and an opaque tint would keep the
+inherited text colour and fail contrast in one of the two schemes.
 
 The Vite plugin scans content once when it transforms a stylesheet. Changing an attribute
 value in `index.html` will not regenerate the CSS until the stylesheet itself changes or

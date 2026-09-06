@@ -1,9 +1,13 @@
 /*
  * The single entry. Order matters: utilities come last so their generated fallback
- * rules land after everything they need to override.
+ * rules land after the components they override.
  */
 
+/* Explicit path: this package has a JS main, so a bare import resolves to index.js. */
 @import "@fylgja/tokens/css/index.css";
-@import "@fylgja/base/index.css";
+@import "@fylgja/base";
+@import "@fylgja/base/theme";
+@import "@fylgja/card";
+@import "@fylgja/badge";
 @import "./style.css";
 @import "./utilities.css";

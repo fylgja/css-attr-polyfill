@@ -9,7 +9,9 @@
 		"inspect": "css-attr-polyfill src/utilities.css -c \"*.html\""
 	},
 	"dependencies": {
+		"@fylgja/badge": "^2.0.0",
 		"@fylgja/base": "^2.1.6",
+		"@fylgja/card": "^2.0.2",
 		"@fylgja/css-attr-polyfill": "file:..",
 		"@fylgja/tokens": "^2.2.1"
 	},
