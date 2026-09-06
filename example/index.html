@@ -6,7 +6,7 @@
 		<title>CSS attr() v2, compiled</title>
 	</head>
 	<body>
-		<main data-p="3">
+		<main>
 			<header>
 				<h1>CSS <code>attr()</code> v2, compiled</h1>
 				<p>
@@ -22,24 +22,24 @@
 
 			<section>
 				<h2>A component built from the utilities</h2>
-				<div class="stack" data-gap="2">
-					<article class="card" data-p="3" data-radius="10px">
-						<h3 data-py="1">Deploy previews</h3>
+				<div class="stack" data-gap="4">
+					<article class="card" data-p="6" data-radius="10px">
+						<h3 data-py="2">Deploy previews</h3>
 						<p>
 							Every attribute below drives a real declaration through
 							<code>attr()</code>.
 						</p>
 						<span
 							class="chip labelled"
-							data-px="2"
-							data-py="1"
+							data-px="4"
+							data-py="2"
 							data-radius="999px"
 							data-label="new"
 							>status</span
 						>
 					</article>
-					<article class="card" data-p="5" data-radius="4px" data-tint="#fdf3d8">
-						<h3 data-py="1">Wider padding, softer corner</h3>
+					<article class="card" data-p="10" data-radius="4px" data-tint="#fdf3d8">
+						<h3 data-py="2">Wider padding, softer corner</h3>
 						<p>Same component, different attribute values. No extra CSS was written.</p>
 					</article>
 				</div>
@@ -52,21 +52,21 @@
 					used on this page are generated.
 				</p>
 				<div class="row">
-					<span class="chip" data-p="1">1</span>
 					<span class="chip" data-p="2">2</span>
-					<span class="chip" data-p="3">3</span>
-					<span class="chip" data-p="5">5</span>
+					<span class="chip" data-p="4">4</span>
+					<span class="chip" data-p="6">6</span>
 					<span class="chip" data-p="8">8</span>
+					<span class="chip" data-p="12">12</span>
 				</div>
 			</section>
 
 			<section>
 				<h2>One attribute driving two properties</h2>
 				<div class="row baseline">
-					<span class="box" data-size="4"></span>
-					<span class="box" data-size="7"></span>
-					<span class="box" data-size="10"></span>
-					<span class="box" data-size="14"></span>
+					<span class="box" data-size="8"></span>
+					<span class="box" data-size="12"></span>
+					<span class="box" data-size="16"></span>
+					<span class="box" data-size="24"></span>
 				</div>
 			</section>
 
@@ -77,20 +77,20 @@
 					<code>attr-polyfill:</code> comment in <code>utilities.css</code>.
 				</p>
 				<div class="row baseline">
-					<span class="box" data-size="7" data-radius="0px"></span>
-					<span class="box" data-size="7" data-radius="4px"></span>
-					<span class="box" data-size="7" data-radius="10px"></span>
-					<span class="box" data-size="7" data-radius="999px"></span>
+					<span class="box" data-size="12" data-radius="0px"></span>
+					<span class="box" data-size="12" data-radius="4px"></span>
+					<span class="box" data-size="12" data-radius="10px"></span>
+					<span class="box" data-size="12" data-radius="999px"></span>
 				</div>
 			</section>
 
 			<section>
 				<h2>Colours, <code>type(&lt;color&gt;)</code></h2>
 				<div class="row">
-					<span class="box" data-size="7" data-tint="#f5c542"></span>
-					<span class="box" data-size="7" data-tint="#8ec07c"></span>
-					<span class="box" data-size="7" data-tint="#d98a8a"></span>
-					<span class="box" data-size="7" data-tint="rebeccapurple"></span>
+					<span class="box" data-size="12" data-tint="#f5c542"></span>
+					<span class="box" data-size="12" data-tint="#8ec07c"></span>
+					<span class="box" data-size="12" data-tint="#d98a8a"></span>
+					<span class="box" data-size="12" data-tint="rebeccapurple"></span>
 				</div>
 			</section>
 
@@ -101,7 +101,7 @@
 					<code>@media</code>, not hoisted out. Resize the window.
 				</p>
 				<div class="row">
-					<span class="chip" data-md-p="6">resize me</span>
+					<span class="chip" data-md-p="12">resize me</span>
 				</div>
 			</section>
 		</main>

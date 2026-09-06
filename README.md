@@ -171,6 +171,9 @@ the added match is wrapped in `:where()` so specificity does not change.
 page, both paths in the built CSS. Open it in different browsers and a badge tells you which
 path that browser took. It should look the same either way.
 
+It is styled with `@fylgja/base` and `@fylgja/tokens`. Neither is required by this package,
+which works with any CSS.
+
 ```bash
 cd example && npm install && npm run dev
 ```

@@ -3,6 +3,10 @@
 A Vite setup showing how you would actually ship `attr()` v2 today: one stylesheet, written
 once, with static fallbacks generated at build time behind an `@supports` guard.
 
+Styling comes from `@fylgja/base` and `@fylgja/tokens`, so the page is a realistic Fylgja
+project rather than a pile of demo CSS. The compiler itself does not depend on either;
+they are here because this is the setup the tool was built for.
+
 ## Run it
 
 ```bash
@@ -61,9 +65,14 @@ Prints the compiled stylesheet so you can read the generated rules.
 
 ## Notes
 
-`:root` tokens live in `src/tokens.css`, separate from the utilities. The generated rules
-reference custom properties but do not define them, so keep tokens in a file you always
-load.
+`--spacing`, `--size-*` and `--radius-*` come from `@fylgja/tokens`. The generated rules
+reference custom properties but never define them, so tokens must load on every page that
+uses the utilities. `src/style.css` holds only what the demo itself needs, since
+`@fylgja/base` is class-less and covers typography, links, focus rings, forms and buttons.
+
+Attribute values have to be literal. `attr(data-tint type(<color>))` needs `data-tint="#f5c542"`,
+not `data-tint="var(--color-3)"`, because `var()` is not a `<color>` at parse time. The same
+applies to lengths.
 
 The Vite plugin scans content once when it transforms a stylesheet. Changing an attribute
 value in `index.html` will not regenerate the CSS until the stylesheet itself changes or

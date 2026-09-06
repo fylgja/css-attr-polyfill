@@ -1,120 +1,40 @@
 /*
- * Page furniture only. Nothing here uses attr(), so the demo utilities stay
- * clearly separated from the styling of the page around them.
+ * Only what the demo itself needs. Typography, links, focus rings, form and button
+ * styling all come from @fylgja/base, which is class-less, so there is nothing to
+ * write for those. Tokens such as --spacing and --radius-2 come from @fylgja/tokens.
+ *
+ * Nothing in this file uses attr(), so the utilities under test stay clearly separate.
  */
 
-* {
-	box-sizing: border-box;
-}
-
 body {
-	margin: 0;
-	padding: 2rem 1.5rem 4rem;
-	font-family: ui-sans-serif, system-ui, sans-serif;
-	line-height: 1.5;
-	color: #16202c;
-	background: #fff;
+	padding: var(--size-8) var(--size-6) var(--size-20);
 }
 
 main {
-	max-inline-size: 52rem;
+	max-inline-size: var(--size-content);
 	margin-inline: auto;
 }
 
-h1 {
-	margin: 0 0 0.25rem;
-	font-size: 1.5rem;
-}
-
-h2 {
-	margin: 0 0 0.25rem;
-	font-size: 1rem;
-	font-weight: 600;
-}
-
 section {
-	padding-block: 1.5rem;
-	border-block-start: 1px solid #e3e8ef;
-}
-
-code {
-	font-size: 0.85em;
-	background: #eef1f6;
-	padding: 0.1em 0.35em;
-	border-radius: 4px;
+	padding-block: var(--size-6);
+	border-block-start: var(--border-size-1) solid
+		color-mix(in srgb, var(--root-fg) 15%, var(--root-bg));
 }
 
 .hint {
-	margin: 0 0 0.75rem;
-	font-size: 0.875rem;
-	color: #5a6b7f;
+	color: color-mix(in srgb, var(--root-fg) 65%, var(--root-bg));
+	font-size: var(--font-size-1);
 }
 
 .row {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0.75rem;
+	gap: var(--size-3);
 	align-items: center;
 }
 
 .row.baseline {
 	align-items: flex-end;
-}
-
-.chip {
-	background: #dbe6f5;
-	border: 1px solid #b9cbe6;
-	border-radius: 6px;
-	font-size: 0.8rem;
-	font-variant-numeric: tabular-nums;
-}
-
-.box {
-	display: inline-block;
-	min-inline-size: 1rem;
-	min-block-size: 1rem;
-	background: #cbd6e6;
-	border: 1px solid #a9bcd6;
-}
-
-.box.tinted {
-	background: #dbe6f5;
-	inline-size: 3.5rem;
-	block-size: 3.5rem;
-}
-
-.labelled::after {
-	margin-inline-start: 0.4em;
-	font-weight: 700;
-	text-transform: uppercase;
-	font-size: 0.7em;
-	letter-spacing: 0.04em;
-}
-
-/* Pure CSS feature detection, no JavaScript involved. */
-.badge {
-	display: inline-block;
-	padding: 0.25rem 0.6rem;
-	border-radius: 999px;
-	font-size: 0.8rem;
-	font-weight: 600;
-	background: #fde8c8;
-	color: #7a4b00;
-}
-
-.badge::after {
-	content: "generated static CSS";
-}
-
-@supports (padding: attr(x type(<length>), 1px)) {
-	.badge {
-		background: #d6f0dd;
-		color: #14532d;
-	}
-
-	.badge::after {
-		content: "native attr() v2";
-	}
 }
 
 .stack {
@@ -124,19 +44,61 @@ code {
 }
 
 .card {
-	background: var(--surface);
-	border: 1px solid #d7deea;
+	background: var(--surface-color);
+	border: var(--border-size-1) solid color-mix(in srgb, var(--root-fg) 15%, var(--root-bg));
 	inline-size: 100%;
-	max-inline-size: 30rem;
+	max-inline-size: var(--size-heading);
 }
 
-.card h3 {
+.card > :where(h3, p) {
 	margin: 0;
-	font-size: 0.95rem;
 }
 
-.card p {
-	margin: 0 0 0.5rem;
-	font-size: 0.875rem;
-	color: #5a6b7f;
+.chip {
+	background: var(--surface-color);
+	border: var(--border-size-1) solid color-mix(in srgb, var(--root-fg) 15%, var(--root-bg));
+	border-radius: var(--radius-2);
+	font-size: var(--font-size-1);
+	font-variant-numeric: tabular-nums;
+}
+
+.box {
+	display: inline-block;
+	min-inline-size: var(--size-4);
+	min-block-size: var(--size-4);
+	background: color-mix(in srgb, var(--root-fg) 15%, var(--root-bg));
+}
+
+.labelled::after {
+	margin-inline-start: 0.4em;
+	font-weight: 700;
+	font-size: 0.7em;
+	text-transform: uppercase;
+	letter-spacing: 0.04em;
+}
+
+/* Pure CSS feature detection. The badge reports which path this browser took. */
+.badge {
+	display: inline-block;
+	padding: var(--size-1) var(--size-3);
+	border-radius: var(--radius-full);
+	font-size: var(--font-size-1);
+	font-weight: 600;
+	background: oklch(90% 0.12 96);
+	color: oklch(35% 0.15 70);
+}
+
+.badge::after {
+	content: "generated fallback";
+}
+
+@supports (padding: attr(x type(<length>), 1px)) {
+	.badge {
+		background: oklch(90% 0.12 140);
+		color: oklch(35% 0.15 140);
+	}
+
+	.badge::after {
+		content: "native attr() v2";
+	}
 }
