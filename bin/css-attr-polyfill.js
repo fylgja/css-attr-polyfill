@@ -85,10 +85,34 @@ function parseSafelist(entries) {
 	);
 }
 
+/**
+ * Load a config file.
+ *
+ * JSON is read and parsed directly. Importing it would need an `import ... with
+ * { type: "json" }` attribute, which is awkward to express through a dynamic import
+ * and varies by Node version.
+ *
+ * @param {string} path
+ * @returns {Promise<object>}
+ */
+async function loadConfig(path) {
+	if (path.endsWith(".json")) {
+		const contents = await readFile(path, "utf8").catch(() => fail(`cannot read ${path}`));
+		try {
+			return JSON.parse(contents);
+		} catch (error) {
+			fail(`${path} is not valid JSON: ${error.message}`);
+		}
+	}
+
+	const module = await import(pathToFileURL(path).href).catch(() =>
+		fail(`cannot load ${path}`),
+	);
+	return module.default ?? {};
+}
+
 const [input] = positionals;
-const fileConfig = flags.config
-	? ((await import(pathToFileURL(flags.config).href)).default ?? {})
-	: {};
+const fileConfig = flags.config ? await loadConfig(flags.config) : {};
 
 const options = {
 	...fileConfig,
