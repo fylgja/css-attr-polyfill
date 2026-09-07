@@ -1,5 +1,3 @@
-import { compile } from "../compile.js";
-
 /**
  * Prepare a stylesheet for Lightning CSS.
  *
@@ -16,9 +14,8 @@ import { compile } from "../compile.js";
  * const { code } = await preprocess(source, { content: ["src/**\/*.html"] });
  * lightningcss.transform({ code: Buffer.from(code), filename, minify: true });
  */
-export async function preprocess(css, options = {}) {
-	const result = await compile(css, { ...options, mode: "combined" });
-	return { code: result.css, warnings: result.warnings };
-}
-
+export declare function preprocess(css: string, options?: import("../compile.js").CompileOptions): Promise<{
+    code: string;
+    warnings: string[];
+}>;
 export default preprocess;

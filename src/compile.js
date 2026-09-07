@@ -2,14 +2,23 @@ import { collectAttributeNames, scan } from "./scanner.js";
 import { transform } from "./transform.js";
 
 /**
+ * @typedef {import("./transform.js").TransformResult} TransformResult
+ */
+
+/**
+ * @typedef {import("./transform.js").TransformOptions & {
+ *   content?: string[],
+ *   cwd?: string,
+ * }} CompileOptions every `transform` option, plus content scanning
+ */
+
+/**
  * Scan content for attribute values, then compile a stylesheet's attr() calls
  * into static fallbacks.
  *
  * @param {string} css source stylesheet
- * @param {object} [options] every `transform` option, plus the ones below
- * @param {string[]} [options.content] content globs to scan for attribute values
- * @param {string} [options.cwd] base directory for the content globs
- * @returns {Promise<{ css: string, fallback: string | null, warnings: string[], files: number }>}
+ * @param {CompileOptions} [options]
+ * @returns {Promise<TransformResult & { files: number }>} `files` is how many were scanned
  */
 export async function compile(css, options = {}) {
 	const { content = [], cwd, ...transformOptions } = options;

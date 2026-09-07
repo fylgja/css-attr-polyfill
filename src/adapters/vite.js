@@ -12,9 +12,8 @@ const CSS_FILE = /\.css(?:$|\?)/;
  * file had been pulled in. Running afterwards means this sees the CSS that will actually
  * ship, however it was assembled.
  *
- * @param {object} [options] every `compile` option
- * @param {string[]} [options.content] content globs to scan for attribute values
- * @param {RegExp} [options.include] which module ids to process, defaults to .css files
+ * @param {import("../compile.js").CompileOptions & { include?: RegExp }} [options]
+ *   `include` decides which module ids to process, defaulting to .css files
  * @returns {import("vite").Plugin}
  */
 export function attrPolyfill(options = {}) {

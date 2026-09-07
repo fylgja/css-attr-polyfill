@@ -61,13 +61,7 @@ function buildRulesFor(rule, resolve, options) {
  * A PostCSS plugin transforms one stylesheet into one stylesheet, so this always uses
  * combined output. Use the CLI or `compile()` when you want a separate fallback file.
  *
- * @param {object} [options]
- * @param {string[]} [options.content] content globs to scan for attribute values
- * @param {string} [options.cwd] base directory for the content globs
- * @param {Record<string, unknown>} [options.safelist] attribute values, keys may use `*`
- * @param {"merge" | "override"} [options.annotationMode] how CSS annotations combine with config
- * @param {string} [options.supports] `@supports` condition guarding the fallback
- * @param {number} [options.maxValues] cap on generated rules per declaration
+ * @param {import("../compile.js").CompileOptions} [options]
  * @returns {import("postcss").Plugin}
  */
 export function attrPolyfill(options = {}) {

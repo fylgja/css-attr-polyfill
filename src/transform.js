@@ -145,22 +145,33 @@ function renderGroup(node, condition, depth, unit) {
 }
 
 /**
+ * @typedef {object} TransformOptions
+ * @property {"combined" | "split"} [mode] single document, or source plus a fallback document
+ * @property {Record<string, unknown>} [safelist] attribute values, keys may use `*`
+ * @property {Map<string, Set<string>>} [scanned] values found by the content scanner
+ * @property {Set<string>} [dynamic] attributes the scanner found bound at runtime
+ * @property {"merge" | "override"} [annotationMode] how CSS annotations combine with config
+ * @property {string} [supports] `@supports` condition guarding the fallback
+ * @property {number} [maxValues] cap on generated rules per declaration
+ */
+
+/**
+ * @typedef {object} TransformResult
+ * @property {string} css the source stylesheet, compiled in combined mode or untouched in split
+ * @property {string | null} fallback the fallback stylesheet in split mode, otherwise null
+ * @property {string[]} warnings
+ */
+
+/**
  * Compile attr() v2 declarations in a stylesheet into static fallback rules.
  *
- * Combined mode splices each fallback in immediately before its source rule, so generated
+ * Combined mode splices each fallback in immediately after its source rule, so generated
  * CSS keeps that rule's place in the cascade and every untouched byte is preserved exactly.
  * Split mode leaves the source alone and returns a second stylesheet.
  *
  * @param {string} css source stylesheet
- * @param {object} [options]
- * @param {"combined" | "split"} [options.mode] single document, or source plus a fallback document
- * @param {Record<string, unknown>} [options.safelist] attribute values, keys may use `*`
- * @param {Map<string, Set<string>>} [options.scanned] values found by the content scanner
- * @param {Set<string>} [options.dynamic] attributes the scanner found bound at runtime
- * @param {"merge" | "override"} [options.annotationMode] how CSS annotations combine with config
- * @param {string} [options.supports] `@supports` condition guarding the fallback
- * @param {number} [options.maxValues] cap on generated rules per declaration
- * @returns {{ css: string, fallback: string | null, warnings: string[] }}
+ * @param {TransformOptions} [options]
+ * @returns {TransformResult}
  */
 export function transform(css, options = {}) {
 	const {
