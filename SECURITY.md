@@ -2,13 +2,12 @@
 
 ## Supported Versions
 
-This package is still pre 1.0, so only the latest release receives security
-updates.
+Only the latest major version receives security updates.
 
 | Version | Supported          |
 | ------- | ------------------ |
-| 0.1.x   | :white_check_mark: |
-| < 0.1   | :x:                |
+| 1.x     | :white_check_mark: |
+| < 1.0   | :x:                |
 
 ## Reporting a Vulnerability
 
