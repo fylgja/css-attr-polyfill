@@ -12,12 +12,12 @@ Compiles CSS attr() v2 into static fallback rules for browsers without support.
 
 Options:
   -o, --output <file>       Write the result here (default: stdout)
+                            In --split mode this is the fallback stylesheet
   -c, --content <glob>      Content to scan for attribute values (repeatable)
   -s, --safelist <spec>     Values for an attribute, as name=spec (repeatable)
                             e.g. -s data-py=0..12 -s "anchor=--tip,--menu"
       --config <file>       Load options from a JS or JSON config file
-      --split               Emit the fallback as a separate stylesheet
-      --fallback-out <file> Where to write the fallback in split mode
+      --split               Output only the fallback, leaving the source alone
       --supports <cond>     Override the @supports condition guarding the fallback
       --max-values <n>      Cap on generated rules per declaration
       --quiet               Do not print warnings
@@ -29,7 +29,6 @@ const { positionals, values: flags } = parseArgs({
 	options: {
 		config: { type: "string" },
 		content: { multiple: true, short: "c", type: "string" },
-		"fallback-out": { type: "string" },
 		help: { short: "h", type: "boolean" },
 		"max-values": { type: "string" },
 		output: { short: "o", type: "string" },
@@ -136,15 +135,14 @@ if (!flags.quiet) {
 	for (const warning of result.warnings) console.error(`warning: ${warning}`);
 }
 
-if (options.mode === "split") {
-	const fallbackOut = flags["fallback-out"] ?? fileConfig.fallbackOut;
-	if (!fallbackOut) fail("--split requires --fallback-out");
-	await write(fallbackOut, result.fallback);
-	if (flags.output) await write(flags.output, result.css);
-	if (!flags.quiet) console.error(`wrote ${fallbackOut}`);
-} else if (flags.output) {
-	await write(flags.output, result.css);
-	if (!flags.quiet) console.error(`wrote ${flags.output}`);
+// Split mode leaves the source untouched, so the fallback is the only output worth
+// writing. There is nothing for a second destination to hold.
+const output = flags.output ?? fileConfig.output;
+const stylesheet = options.mode === "split" ? result.fallback : result.css;
+
+if (output) {
+	await write(output, stylesheet);
+	if (!flags.quiet) console.error(`wrote ${output}`);
 } else {
-	process.stdout.write(result.css);
+	process.stdout.write(stylesheet);
 }

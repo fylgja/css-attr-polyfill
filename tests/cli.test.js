@@ -107,7 +107,7 @@ describe("cli", () => {
 	it("writes only the fallback in split mode", async () => {
 		const cwd = await fixtureDir({ "in.css": SPACING });
 		const { code } = await cli(
-			["in.css", "-s", "data-py=2", "--split", "--fallback-out", "fallback.css"],
+			["in.css", "-s", "data-py=2", "--split", "-o", "fallback.css"],
 			cwd,
 		);
 
@@ -117,12 +117,25 @@ describe("cli", () => {
 		assert.ok(out.includes('[data-py="2"]'));
 	});
 
-	it("requires --fallback-out when splitting", async () => {
+	it("sends the fallback to stdout when splitting without an output", async () => {
 		const cwd = await fixtureDir({ "in.css": SPACING });
-		const { code, stderr } = await cli(["in.css", "--split"], cwd);
+		const { code, stdout } = await cli(["in.css", "-s", "data-py=2", "--split"], cwd);
 
-		assert.equal(code, 1);
-		assert.match(stderr, /--split requires --fallback-out/);
+		assert.equal(code, 0);
+		assert.ok(!stdout.includes("attr(data-py"));
+		assert.ok(stdout.includes('[data-py="2"]'));
+	});
+
+	it("reads output from the config file", async () => {
+		const cwd = await fixtureDir({
+			"in.css": SPACING,
+			"config.json": JSON.stringify({ output: "out.css", safelist: { "data-py": "2" } }),
+		});
+		const { code } = await cli(["in.css", "--config", "./config.json"], cwd);
+
+		assert.equal(code, 0);
+		const out = await readFile(join(cwd, "out.css"), "utf8");
+		assert.ok(out.includes('[data-py="2"]'));
 	});
 
 	it("reports an unreadable input file", async () => {

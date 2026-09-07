@@ -80,11 +80,45 @@ css-attr-polyfill utilities.css -c "src/**/*.{html,jsx,vue}" -o utilities.compil
 | `-c, --content <glob>`  | Content to scan for attribute values (repeatable)        |
 | `-s, --safelist <spec>` | Values for an attribute, as `name=spec` (repeatable)     |
 | `--config <file>`       | Load options from a JS or JSON config file               |
-| `--split`               | Emit the fallback as a separate stylesheet               |
-| `--fallback-out <file>` | Where to write the fallback in split mode                |
+| `--split`               | Output only the fallback, leaving the source alone       |
 | `--supports <cond>`     | Override the `@supports` condition guarding the fallback |
 | `--max-values <n>`      | Cap on generated rules per declaration                   |
 | `--quiet`               | Do not print warnings                                    |
+
+With `--split`, `-o` receives the fallback stylesheet. There is no second destination,
+because the source is returned unchanged and you already have it on disk.
+
+### Config file
+
+Everything except the input path and `--quiet` can live in a config file, so the whole
+build reduces to `css-attr-polyfill utilities.css --config ./attr.config.json`. Keys are
+camelCase where the flag is kebab-case.
+
+```json
+{
+  "safelist": { "data-*": "0..12 by 0.5" },
+  "content": ["src/**/*.html"],
+  "mode": "split",
+  "output": "utilities.fallback.css",
+  "supports": "not (padding: attr(x type(<length>), 1px))",
+  "maxValues": 250,
+  "annotationMode": "merge",
+  "cwd": "."
+}
+```
+
+| Key              | Flag              | Notes                                            |
+| ---------------- | ----------------- | ------------------------------------------------ |
+| `safelist`       | `-s`              | Flags merge on top of the config, per attribute  |
+| `content`        | `-c`              | Flags replace the config outright                |
+| `mode`           | `--split`         | `"combined"` (default) or `"split"`              |
+| `output`         | `-o`              |                                                  |
+| `supports`       | `--supports`      |                                                  |
+| `maxValues`      | `--max-values`    |                                                  |
+| `annotationMode` | none              | `"merge"` (default) or `"override"`              |
+| `cwd`            | none              | Base directory for `content` globs               |
+
+A JS config works too, as `export default { ... }`.
 
 ### API
 
