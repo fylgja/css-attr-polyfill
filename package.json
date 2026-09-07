@@ -1,6 +1,6 @@
 {
   "name": "@fylgja/css-attr-polyfill",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Compile CSS attr() v2 into static fallbacks for browsers that do not support it",
   "homepage": "https://fylgja.dev/",
   "author": "Fylgja",
